@@ -219,10 +219,8 @@ function oauth_common_form_authorize_validate($form, &$form_state) {
       }
     }
 
-    $got_permission = $got_permission;
-
     if (!$got_permission) {
-      form_set_error('confirm', t('You haven\'t given the application access to anything. Click on "Deny access" or just close this window if you don\'t want to authorize it.'));
+      form_set_error('confirm', t("You haven't given the application access to anything. Click on 'Deny access' or just close this window if you don't want to authorize it."));
     }
   }
 }
