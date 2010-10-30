@@ -65,6 +65,11 @@ function oauth_common_verify_request() {
     $consumer = DrupalOAuthConsumer::load($consumer_key, TRUE);
     if ($consumer) {
       $context = oauth_common_context_load($consumer->context);
+
+      if (!$context) {
+        throw new Exception('No OAuth context found');
+      }
+
       _oauth_common_verify_body_hash($req);
 
       // Only verify request if we got a signature

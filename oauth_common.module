@@ -508,6 +508,9 @@ function oauth_common_get_user_tokens($uid, $type='access', $provider_tokens=TRU
  *  An context initialized with the default values.
  */
 function oauth_common_context_new() {
+  if (!module_exists('ctools')) {
+    return FALSE;
+  }
   ctools_include('export');
   return ctools_export_new_object('oauth_common_context');
 }
@@ -521,6 +524,9 @@ function oauth_common_context_new() {
  *  The context configuration.
  */
 function oauth_common_context_load($name) {
+  if (!module_exists('ctools')) {
+    return FALSE;
+  }
   ctools_include('export');
   $result = ctools_export_load_object('oauth_common_context', 'names', array($name));
   if (isset($result[$name])) {
@@ -566,6 +572,9 @@ function oauth_common_context_from_request($request) {
  *  Array of context objects keyed by context names.
  */
 function oauth_common_context_load_all() {
+  if (!module_exists('ctools')) {
+    return FALSE;
+  }
   ctools_include('export');
   return ctools_export_load_object('oauth_common_context');
 }
@@ -595,6 +604,9 @@ function oauth_common_context_delete($context) {
  * @return string
  */
 function oauth_common_context_export($context, $indent = '') {
+  if (!module_exists('ctools')) {
+    return FALSE;
+  }
   ctools_include('export');
   $output = ctools_export_object('oauth_common_context', $context, $indent);
   return $output;
@@ -608,8 +620,10 @@ function oauth_common_context_export($context, $indent = '') {
 function oauth_common_context_list() {
   $return = array();
   $contexts = oauth_common_context_load_all();
-  foreach ($contexts as $context) {
-    $return[$context->name] = $context->title;
+  if ($contexts) {
+    foreach ($contexts as $context) {
+      $return[$context->name] = $context->title;
+    }
   }
   return $return;
 }

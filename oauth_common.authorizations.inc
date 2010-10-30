@@ -175,14 +175,16 @@ function oauth_common_permissions_form($account, &$form, $consumer, $context, $d
     '@sitename' => variable_get('site_name', ''),
   );
 
-  foreach ($context->authorization_levels as $name => $level) {
-    $auth_opt = array(
-      '#type' => 'checkbox',
-      '#title' => t($level['title'], $tvars),
-      '#description' => t($level['description'], $tvars),
-      '#default_value' => in_array($name, $default_services),
-    );
-    $form['authorization']['levels'][$name] = $auth_opt;
+  if ($context) {
+    foreach ($context->authorization_levels as $name => $level) {
+      $auth_opt = array(
+        '#type' => 'checkbox',
+        '#title' => t($level['title'], $tvars),
+        '#description' => t($level['description'], $tvars),
+        '#default_value' => in_array($name, $default_services),
+      );
+      $form['authorization']['levels'][$name] = $auth_opt;
+    }
   }
 }
 

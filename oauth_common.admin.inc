@@ -44,6 +44,10 @@ function oauth_common_list_context($js = NULL) {
   $contexts = oauth_common_context_load_all();
   $rows = array();
 
+  if (!$contexts) {
+    $contexts = array();
+  }
+
   foreach ($contexts as $context) {
     $operations = array();
 
@@ -115,7 +119,16 @@ function oauth_common_list_context($js = NULL) {
 function oauth_common_add_context() {
   $context = oauth_common_context_new();
   drupal_set_title(t('Add context'));
-  return oauth_common_edit_context($context);
+  if (!$context) {
+    drupal_set_message(t("Can't create contexts, check that you've installed !ctools.", array(
+      '!ctools' => l('Chaos tool suite', 'http://drupal.org/project/ctools'),
+    )), 'error');
+    $result = '';
+  }
+  else {
+    $result = oauth_common_edit_context($context);
+  }
+  return $result;
 }
 
 /**
