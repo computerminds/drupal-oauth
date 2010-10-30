@@ -115,7 +115,12 @@ function _oauth_common_verify_body_hash($req) {
   $body_hash = $req->get_parameter('oauth_body_hash');
   if ($body_hash) {
     $hres = hash_init('sha1');
-    $stream = fopen('drupal://input', 'r');
+    if (module_exists('inputstream')) {
+      $stream = fopen('drupal://input', 'r');
+    }
+    else {
+      $stream = fopen('php://input', 'r');
+    }
     hash_update_stream($hres, $stream);
     fclose($stream);
     $sha1 = hash_final($hres, TRUE);
