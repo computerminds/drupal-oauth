@@ -18,6 +18,12 @@ function oauth_common_schema() {
       'export callback' => 'oauth_common_context_export',
       'list callback'   => 'oauth_common_context_list',
       'key'             => 'name',
+	  'api' => array(
+	    'owner' => 'oauth_common',
+	    'api'   => 'oauth',
+	    'minimum_version' => 1,
+	    'current_version' => 1,
+	  ),
     ),
     'fields' => array(
       'cid' => array(

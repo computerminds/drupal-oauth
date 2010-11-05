@@ -10,6 +10,7 @@ by voxpelli: Fixed bug assigning context to OAuthServer
 by voxpelli: Code cleanup
 by voxpelli: Made inputstream a suggestion instead of a dependency
 by voxpelli: Made ctools an optional recommendation instead of a dependency
+by voxpelli: Changed to use API-version in ctools exports
 
 OAuth 6.x-3.0-beta2, 2010-07-18
 ------------------------------
