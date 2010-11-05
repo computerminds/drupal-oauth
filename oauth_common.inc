@@ -65,6 +65,11 @@ function oauth_common_verify_request() {
     $consumer = DrupalOAuthConsumer::load($consumer_key, TRUE);
     if ($consumer) {
       $context = oauth_common_context_load($consumer->context);
+
+      if (!$context) {
+        throw new Exception('No OAuth context found');
+      }
+
       _oauth_common_verify_body_hash($req);
 
       // Only verify request if we got a signature
@@ -115,7 +120,12 @@ function _oauth_common_verify_body_hash($req) {
   $body_hash = $req->get_parameter('oauth_body_hash');
   if ($body_hash) {
     $hres = hash_init('sha1');
-    $stream = fopen('drupal://input', 'r');
+    if (module_exists('inputstream')) {
+      $stream = fopen('drupal://input', 'r');
+    }
+    else {
+      $stream = fopen('php://input', 'r');
+    }
     hash_update_stream($hres, $stream);
     fclose($stream);
     $sha1 = hash_final($hres, TRUE);

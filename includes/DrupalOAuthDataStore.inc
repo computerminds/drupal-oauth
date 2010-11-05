@@ -8,7 +8,7 @@ class DrupalOAuthDataStore extends OAuthDataStore {
   private $context;
 
   public function __construct($context) {
-    $this->construct = $construct;
+    $this->context = $context;
   }
 
   /**

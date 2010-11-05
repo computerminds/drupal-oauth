@@ -57,6 +57,12 @@ function oauth_common_form_authorize() {
   module_load_include('inc', 'oauth_common');
   $req = DrupalOAuthRequest::from_request();
   $context = oauth_common_context_from_request($req);
+
+  if (!$context) {
+    drupal_set_message(t("Can't find OAuth context, check the site's settings."), 'error');
+    return;
+  }
+
   $token = $req->get_parameter('oauth_token');
   $callback = $req->get_parameter('oauth_callback');
   $token = DrupalOAuthToken::load($token, TRUE);
@@ -211,6 +217,11 @@ function oauth_common_form_authorize_validate($form, &$form_state) {
   $consumer = DrupalOAuthConsumer::load($values['oauth_consumer'], TRUE);
   $context = oauth_common_context_load($consumer->context);
 
+  if (!$context) {
+    form_set_error('confirm', t("Can't find OAuth context."));
+    return;
+  }
+
   if (!$context->authorization_options['disable_auth_level_selection']) {
     foreach ($context->authorization_levels as $name => $level) {
       if ($values['levels'][$name]) {
@@ -219,10 +230,8 @@ function oauth_common_form_authorize_validate($form, &$form_state) {
       }
     }
 
-    $got_permission = $got_permission;
-
     if (!$got_permission) {
-      form_set_error('confirm', t('You haven\'t given the application access to anything. Click on "Deny access" or just close this window if you don\'t want to authorize it.'));
+      form_set_error('confirm', t("You haven't given the application access to anything. Click on 'Deny access' or just close this window if you don't want to authorize it."));
     }
   }
 }
@@ -241,6 +250,11 @@ function oauth_common_form_authorize_submit(&$form, &$form_state) {
   $token->services = array();
   $consumer = DrupalOAuthConsumer::load($token->consumer_key, TRUE);
   $context = oauth_common_context_load($consumer->context);
+
+  if (!$context) {
+    drupal_set_message(t("Can't find OAuth context, check the site's settings."), 'error');
+    return;
+  }
 
   // Add services
   if ($values['full_access']) { // TODO: Full access should be a configurable auth level
@@ -298,7 +312,11 @@ function _oauth_common_glue_url($parsed) {
 function oauth_common_callback_request_token() {
   try {
     $req = DrupalOAuthRequest::from_request();
-    $server = new DrupalOAuthServer(oauth_common_context_from_request($req));
+    $context = oauth_common_context_from_request($req);
+    if (!$context) {
+      throw new Exception('No OAuth context found');
+    }
+    $server = new DrupalOAuthServer($context);
     print $server->fetch_request_token($req);
   }
   catch (OAuthException $e) {
@@ -314,6 +332,9 @@ function oauth_common_callback_access_token() {
   try {
     $req = DrupalOAuthRequest::from_request();
     $context = oauth_common_context_from_request($req);
+    if (!$context) {
+      throw new Exception('No OAuth context found');
+    }
     $server = new DrupalOAuthServer($context);
     $access_token = $server->fetch_access_token($req);
 

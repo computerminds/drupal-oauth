@@ -4,8 +4,8 @@ description = Provides OAuth functionality
 package = "OAuth"
 
 dependencies[] = autoload
-dependencies[] = inputstream
-dependencies[] = ctools
+recommends[] = ctools
+suggests[] = inputstream
 
 core = 6.x
 php = 5.2
