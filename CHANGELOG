@@ -1,6 +1,6 @@
 // $Id$
 
-OAuth 6.x-3.0-beta3, 2010-10-31
+OAuth 6.x-3.0-beta3, 2010-11-05
 ------------------------------
 by voxpelli: Fixed user consumer listing
 by hugowetterberg: Fixed handling of empty and 'oob' callback urls.
