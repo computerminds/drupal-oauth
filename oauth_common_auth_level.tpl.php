@@ -1,4 +1,6 @@
 <?php
+// $Id$
+
 $element['left'] = array(
   '#prefix' => '<div class="oauth-common-left-panel">',
   '#suffix' => '</div>',

@@ -1,4 +1,5 @@
 <?php
+// $Id$
 
 /**
  * Menu system callback for listing a users consumers.
@@ -244,5 +245,5 @@ function oauth_common_form_consumer_delete_submit($form, &$form_state) {
   $consumer->delete();
   drupal_set_message(t('Deleted the consumer @name', array('@name' => $consumer->name)));
   
-  drupal_goto('user/' . $consumer->uid . '/consumers');
+  drupal_goto(sprintf('user/%d/oauth/consumers', $consumer->uid));
 }

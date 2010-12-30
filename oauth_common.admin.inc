@@ -92,7 +92,7 @@ function oauth_common_list_context($js = NULL) {
     $rows[$context->name] = array(
       'data' => array(
         'title' => array(
-          'data'  => $context->title,
+          'data'  => check_plain($context->title),
           'class' => 'oauth-common-contexts-title',
         ),
         'storage' => array(

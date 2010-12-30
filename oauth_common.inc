@@ -24,10 +24,12 @@ function oauth_common_user_consumers($uid, $provider_consumer = NULL) {
     $args[':provider_consumer'] = $provider_consumer;
   }
   $result = db_query($query, $args);
+
   $consumers = array();
   while ($consumer = DrupalOAuthConsumer::fromResult($result)) {
     $consumers[] = $consumer;
   }
+
   return $consumers;
 }
 

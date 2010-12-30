@@ -13,7 +13,7 @@ class DrupalOAuthToken extends OAuthToken {
   public $expires = 0;
   public $in_database = FALSE;
 
-  public function __construct($key, $secret, $params=array()) {
+  public function __construct($key, $secret, $params = array()) {
     parent::__construct($key, $secret);
     foreach($params as $key => $value) {
       if (isset($this->$key)) {
@@ -29,8 +29,8 @@ class DrupalOAuthToken extends OAuthToken {
    *  Optional. Set to TRUE if the token exists and should be updated. Defaults to FALSE.
    * @return void
    */
-  public function write($update=FALSE) {
     $primary = $update ? array('token_key', 'provider_token') : array();
+  public function write($update = FALSE) {
 
     if (!$update) {
       $this->created = time();

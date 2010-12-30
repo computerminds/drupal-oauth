@@ -1,6 +1,12 @@
 <?php
+// $Id$
 
-function oauth_common_page_user_authorizations($account, $provider=TRUE) {
+/**
+ * @file
+ * Functions related to a user's authorization section
+ */
+
+function oauth_common_page_user_authorizations($account, $provider = TRUE) {
   $url = $provider ?
     'user/%d/oauth/authorizations/%s':
     'user/%d/oauth/access/%s';
@@ -168,7 +174,7 @@ function oauth_common_form_authorization($form_state, $token) {
   return $form;
 }
 
-function oauth_common_permissions_form($account, &$form, $consumer, $context, $default_services=array('*')) {
+function oauth_common_permissions_form($account, &$form, $consumer, $context, $default_services = array('*')) {
   $tvars = array(
     '@appname' => $consumer->name,
     '@user' => $account->name,
@@ -195,13 +201,7 @@ function oauth_common_form_authorization_submit($form, $form_state) {
 
   // Collect the authorization levels
   if (isset($values['levels'])) {
-    $services = array();
-    foreach ($values['levels'] as $level => $allowed) {
-      if ($allowed) {
-        $services[] = $level;
-      }
-    }
-    $token->services = $services;
+    $token->services = array_keys(array_filter($values['levels']));
   }
   
   $token->authorized = $values['authorized'];

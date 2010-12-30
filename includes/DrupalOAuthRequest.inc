@@ -11,9 +11,9 @@ class DrupalOAuthRequest extends OAuthRequest {
    * @return OAuthRequest
    *  A OAuthRequest generated from the request
    */
-  public static function from_request($http_method=NULL, $http_url=NULL, $parameters=NULL) {
+  public static function from_request($http_method = NULL, $http_url = NULL, $parameters = NULL) {
     // Preparations that has to be made if we're going to detect parameters
-    if ($parameters==NULL) {
+    if ($parameters == NULL) {
       $qs = $_SERVER['QUERY_STRING'];
       $q = $_GET['q'];
 
@@ -22,7 +22,7 @@ class DrupalOAuthRequest extends OAuthRequest {
         $q = FALSE;
       }
       // Check that the q parameter hasn't been created or altered by drupal
-      else if(isset($_GET['q'])) {
+      elseif(isset($_GET['q'])) {
         $get = array();
         parse_str($_SERVER['QUERY_STRING'], $get);
         // The q parameter was in the original request, make sure it hasn't been altered

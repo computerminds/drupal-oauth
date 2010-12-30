@@ -2,8 +2,8 @@
 // $Id$
 
 /**
-* Database abstraction class
-*/
+ * Database abstraction class
+ */
 class DrupalOAuthDataStore extends OAuthDataStore {
   private $context;
 
@@ -23,7 +23,7 @@ class DrupalOAuthDataStore extends OAuthDataStore {
    * @throws OAuthException
    *  An exception is thrown when the consumer cannot be found
    */
-  public function lookup_consumer($consumer_key, $provider_consumer=TRUE) {
+  public function lookup_consumer($consumer_key, $provider_consumer = TRUE) {
     $consumer = DrupalOAuthConsumer::load($consumer_key, $provider_consumer);
     if (!$consumer) {
       throw new OAuthException('Consumer not found');
@@ -47,12 +47,12 @@ class DrupalOAuthDataStore extends OAuthDataStore {
    * @throws OAuthException
    *  An exception is thrown when the token cannot be found or doesn't match
    */
-  public function lookup_token($consumer, $token_type, $token, $provider_token=TRUE) {
+  public function lookup_token($consumer, $token_type, $token, $provider_token = TRUE) {
     $token = DrupalOAuthToken::load($token, $provider_token);
     if ($token) {
-      if ($token->type==$token_type
-          && $token->consumer_key==$consumer->key
-          && $token->provider_token==$provider_token) {
+      if ($token->type == $token_type
+          && $token->consumer_key == $consumer->key
+          && $token->provider_token == $provider_token) {
         return $token;
       }
       throw new OAuthException('No matching token was found, token type or consumer key mismatch');
@@ -80,9 +80,9 @@ class DrupalOAuthDataStore extends OAuthDataStore {
     $stored_nonce = db_result(db_query(
       "SELECT nonce FROM {oauth_common_nonce}
       WHERE nonce='%s' AND timestamp <= %d and token = '%s'", array(
-        ':nonce' => $nonce,
+        ':nonce'     => $nonce,
         ':timestamp' => $timestamp,
-        ':token' => $token->key,
+        ':token'     => $token->key,
       )));
 
     if (!$stored_nonce) {
@@ -106,7 +106,7 @@ class DrupalOAuthDataStore extends OAuthDataStore {
    * @return DrupalOAuthToken
    *  The request token
    */
-  function new_request_token($consumer, $callback = null) {
+  function new_request_token($consumer, $callback = NULL) {
     $token = new DrupalOAuthToken(user_password(32), user_password(32), array(
       'consumer_key'    => $consumer->key,
       'type'            => 'request',
@@ -126,7 +126,7 @@ class DrupalOAuthDataStore extends OAuthDataStore {
    * @param OAuthConsumer $consumer
    *   The service consumer information.
    */
-  function new_access_token($token_old, $consumer, $verifier = null) {
+  function new_access_token($token_old, $consumer, $verifier = NULL) {
     module_load_include('inc', 'oauth_common');
 
     if ($token_old && $token_old->authorized) {
