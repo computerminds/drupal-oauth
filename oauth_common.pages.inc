@@ -26,13 +26,20 @@ function _oauth_common_validate_request_callback($type, $unsigned=NULL) {
   exit;
 }
 
-function oauth_common_page_authorized() {
-  // If we have a outh_token we're acting as a consumer and just got authorized
+function oauth_common_page_authorized($csid = NULL) {
+  // If we have an oauth_token we're acting as a consumer and just got authorized
   if (!empty($_GET['oauth_token'])) {
-    $request_token = DrupalOAuthToken::load($_GET['oauth_token'], FALSE);
-    if ($request_token) {
-      $consumer_token = DrupalOAuthConsumer::load($request_token->consumer_key, FALSE);
-      $client = new DrupalOAuthClient($consumer_token, $request_token);
+    $consumer = DrupalOAuthConsumer::loadById($csid, FALSE);
+    if ($consumer) {
+      $request_token = DrupalOAuthToken::loadByKey($_GET['oauth_token'], $consumer);
+    }
+    else {
+      // Backwards compatibility with 6.x-3.0-beta3
+      $request_token = DrupalOAuthToken::load($_GET['oauth_token'], FALSE);
+      $consumer = $request_token->consumer;
+    }
+    if (!empty($request_token)) {
+      $client = new DrupalOAuthClient($consumer, $request_token);
 
       $verifier = isset($_GET['oauth_verifier']) ? $_GET['oauth_verifier'] : NULL;
 
@@ -43,7 +50,7 @@ function oauth_common_page_authorized() {
           $access_token->write();
         }
         $request_token->delete();
-        module_invoke_all('oauth_common_authorized', $consumer_token, $access_token, $request_token);
+        module_invoke_all('oauth_common_authorized', $consumer, $access_token, $request_token);
       }
     }
   }
@@ -65,7 +72,7 @@ function oauth_common_form_authorize() {
 
   $token = $req->get_parameter('oauth_token');
   $callback = $req->get_parameter('oauth_callback');
-  $token = DrupalOAuthToken::load($token, TRUE);
+  $token = DrupalOAuthToken::loadByKey($token, FALSE, OAUTH_COMMON_TOKEN_TYPE_REQUEST);
 
   // Check that we have a valid token
   if (!$token) {
@@ -73,7 +80,7 @@ function oauth_common_form_authorize() {
     return;
   }
 
-  $consumer = DrupalOAuthConsumer::load($token->consumer_key, TRUE);
+  $consumer = $token->consumer;
 
   // Redirect to the right form, or present an error.
   global $user;
@@ -119,14 +126,10 @@ function oauth_common_form_authorize() {
     drupal_set_title(t($title, $tvars));
 
     $form = array();
-    $form['oauth_parameters'] = array(
-      '#type'   => 'value',
-      '#value'  => serialize($req->get_parameters()),
-    );
 
-    $form['oauth_consumer'] = array(
-      '#type'   => 'value',
-      '#value'  => $consumer->key,
+    $form['token'] = array(
+      '#type'  => 'value',
+      '#value' => $token,
     );
 
     $message = !empty($context->authorization_options['message']) ? $context->authorization_options['message'] :
@@ -153,7 +156,6 @@ function oauth_common_form_authorize() {
       $form['authorization'] = array(
         '#type' => 'fieldset',
         '#title' => t($authorization_title, $tvars),
-        '#options' => $auth_levels,
       );
 
       $form['authorization']['levels'] = array(
@@ -214,7 +216,7 @@ function oauth_common_form_authorize_validate($form, &$form_state) {
   $values = $form_state['values'];
   $got_permission = FALSE;
 
-  $consumer = DrupalOAuthConsumer::load($values['oauth_consumer'], TRUE);
+  $consumer = $values['token']->consumer;
   $context = oauth_common_context_load($consumer->context);
 
   if (!$context) {
@@ -239,16 +241,13 @@ function oauth_common_form_authorize_validate($form, &$form_state) {
 function oauth_common_form_authorize_submit(&$form, &$form_state) {
   global $user;
   $values = $form_state['values'];
-  // Unserialize the stored oauth parameters
-  $parameters = unserialize($values['oauth_parameters']);
 
   // Save the list of all services that the user allowed the
   // consumer to do
-  $token = DrupalOAuthToken::load($parameters['oauth_token'], TRUE);
+  $token = $values['token'];
   $token->uid = $user->uid;
   $token->authorized = 1;
-  $token->services = array();
-  $consumer = DrupalOAuthConsumer::load($token->consumer_key, TRUE);
+  $consumer = $token->consumer;
   $context = oauth_common_context_load($consumer->context);
 
   if (!$context) {
@@ -268,8 +267,6 @@ function oauth_common_form_authorize_submit(&$form, &$form_state) {
   }
 
   $token->write(TRUE);
-
-  $got_permission = $got_permission || $values['full_access']; // TODO: Full access should be a configurable auth level
 
   if (!empty($consumer->callback_url) && $consumer->callback_url !== 'oob') {
     // Pick the callback url apart and add the token parameter

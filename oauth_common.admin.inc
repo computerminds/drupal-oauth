@@ -167,7 +167,7 @@ function oauth_common_edit_form_context(&$form_state, $context) {
   $form['name'] = array(
     '#type'          => 'textfield',
     '#size'          => 24,
-    '#maxlength'     => 255,
+    '#maxlength'     => 32,
     '#default_value' => $context->name,
     '#title'         => t('Context name'),
     '#description'   => t('A unique name used to identify this preset internally. It must be only be alpha characters and underscores. No spaces, numbers or uppercase characters.'),
@@ -177,7 +177,7 @@ function oauth_common_edit_form_context(&$form_state, $context) {
   $form['title'] = array(
     '#type'          => 'textfield',
     '#size'          => 24,
-    '#maxlength'     => 255,
+    '#maxlength'     => 100,
     '#default_value' => $context->title,
     '#title'         => t('Context title'),
     '#required'      => TRUE,
@@ -344,7 +344,7 @@ function oauth_common_edit_form_auth_level($context, $idx, $title, $name = '', $
       '#title' => t('Name'),
       '#description' => t('The name of the authorization level.'),
       '#size' => 40,
-      '#maxlength' => 255,
+      '#maxlength' => 32,
       '#default_value' => $name,
       '#oauth_common_panel' => 'left',
     ),
@@ -353,7 +353,7 @@ function oauth_common_edit_form_auth_level($context, $idx, $title, $name = '', $
       '#title' => t('Title'),
       '#description' => t('The title of the authorization level.'),
       '#size' => 40,
-      '#maxlength' => 255,
+      '#maxlength' => 100,
       '#default_value' => $level['title'],
       '#oauth_common_panel' => 'left',
     ),
@@ -450,7 +450,6 @@ function oauth_common_edit_form_context_validate(&$form, &$form_state) {
       else if (preg_match("/[^A-Za-z0-9_\*]/", $level['name'])) {
         form_error($form["l_{$idx}_name"], t('Authorization level name must be alphanumeric or underscores only.'));
       }
-
       if (empty($level['title'])) {
         form_error($form["l_{$idx}_title"], t('Authorization levels must have a title.'));
       }

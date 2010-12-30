@@ -6,14 +6,10 @@
  *
  * @param object $account 
  */
-function oauth_common_page_user_consumers($account, $provider = TRUE) {
+function oauth_common_page_user_consumers($account) {
   module_load_include('inc', 'oauth_common');
 
-  $url = $provider ?
-    'user/%d/oauth/consumer/%s' :
-    'admin/settings/oauth/consumers/%s';
-
-  $ci = oauth_common_user_consumers($account->uid, $provider);
+  $ci = oauth_common_user_consumers($account->uid);
   $header = array(
     array('data' => t('Name'),        'class' => 'oauth-common-consumer-name'),
     array('data' => t('Key'),         'class' => 'oauth-common-consumer-key'),
@@ -42,11 +38,11 @@ function oauth_common_page_user_consumers($account, $provider = TRUE) {
     if (oauth_common_can_edit_consumer($consumer)) {
       $operations[] = array(
         'title' => t('Edit'),
-        'href'  => sprintf($url, $account->uid, $consumer->key),
+        'href'  => sprintf('user/%d/oauth/consumer/%s', $account->uid, $consumer->csid),
       );
       $operations[] = array(
         'title' => t('Delete'),
-        'href'  => sprintf($url, $account->uid, $consumer->key) . '/delete',
+        'href'  => sprintf('user/%d/oauth/consumer/%s', $account->uid, $consumer->csid) . '/delete',
       );
     }
 
@@ -70,7 +66,7 @@ function oauth_common_page_user_consumers($account, $provider = TRUE) {
  * Menu system callback for the add consumer page.
  */
 function oauth_common_add_consumer($account) {
-  $consumer = new DrupalOAuthConsumer(user_password(32), user_password(32), '', TRUE);
+  $consumer = new DrupalOAuthConsumer(user_password(32), user_password(32), array('callback_url' => ''));
   $consumer->uid = $account->uid;
   return drupal_get_form('oauth_common_form_consumer', $consumer);
 }
@@ -149,7 +145,7 @@ function oauth_common_form_consumer(&$form_state, $consumer) {
       '#type' => 'button',
       '#value' => t('Show secret'),
       '#ahah' => array(
-        'path' => "user/{$consumer->uid}/oauth/consumer/{$consumer->key}/ahah/secret",
+        'path' => "user/{$consumer->uid}/oauth/consumer/{$consumer->csid}/ahah/secret",
         'wrapper' => 'consumer-secret-wrapper',
         'method' => 'replace',
       ),
@@ -201,7 +197,7 @@ function oauth_common_form_consumer_submit($form, &$form_state) {
 
   // Update or create the consumer.
   $update = $consumer->in_database;
-  $consumer->write($update);
+  $consumer->write();
 
   if ($update) {
     drupal_set_message(t('Updated the consumer @name', array('@name' => $v['name'])));

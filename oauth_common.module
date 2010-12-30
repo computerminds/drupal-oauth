@@ -3,6 +3,9 @@
 
 define('OAUTH_COMMON_CODE_BRANCH', '6.x-3.x');
 
+define('OAUTH_COMMON_TOKEN_TYPE_REQUEST', 0);
+define('OAUTH_COMMON_TOKEN_TYPE_ACCESS', 1);
+
 define('OAUTH_COMMON_VERSION_1', 1);     // The original 1.0 spec
 define('OAUTH_COMMON_VERSION_1_RFC', 2); // The RFC 5849 1.0 spec
 
@@ -167,8 +170,8 @@ function oauth_common_menu() {
  *
  * @param string $key
  */
-function oauth_common_consumer_load($key) {
-  $consumer = DrupalOAuthConsumer::load($key, TRUE);
+function oauth_common_consumer_load($csid) {
+  $consumer = DrupalOAuthConsumer::loadById($csid, TRUE);
   if (!$consumer) {
     $consumer = FALSE;
   }
@@ -180,47 +183,20 @@ function oauth_common_consumer_load($key) {
  *
  * @param string $key
  */
-function oauth_common_provider_token_load($key) {
-  $consumer = DrupalOAuthToken::load($key, TRUE);
-  if (!$consumer) {
-    $consumer = FALSE;
+function oauth_common_provider_token_load($tid) {
+  $token = DrupalOAuthToken::loadByID($tid);
+  if (!$token) {
+    $token = FALSE;
   }
-  return $consumer;
-}
-
-/**
- * Menu system wildcard loader for consumer consumers.
- *
- * @param string $key
- */
-function oauth_common_consumer_consumer_load($key) {
-  $consumer = DrupalOAuthConsumer::load($key, FALSE);
-  if (!$consumer) {
-    $consumer = FALSE;
-  }
-  return $consumer;
-}
-
-/**
- * Menu system wildcard loader for consumer tokens.
- *
- * @param string $key
- */
-function oauth_common_consumer_token_load($key) {
-  $consumer = DrupalOAuthToken::load($key, FALSE);
-  if (!$consumer) {
-    $consumer = FALSE;
-  }
-  return $consumer;
+  return $token;
 }
 
 /**
  * Implementation of hook_cron().
  */
 function oauth_common_cron() {
-  db_query("DELETE FROM {oauth_common_token}
-    WHERE expires!=0
-    AND expires <= %d", array(
+  db_query("DELETE t, pt FROM {oauth_common_token} t LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
+    WHERE t.expires != 0 AND t.expires <= %d", array(
       ':now' => time(),
   ));
 
@@ -276,18 +252,18 @@ function oauth_common_user($op, &$edit, &$account, $category = NULL) {
   if ($op == 'delete') {
     // Delete all tokens and consumers related to a user
     module_load_include('inc', 'oauth_common');
-    db_query('DELETE FROM {oauth_common_consumer}
-      WHERE uid = %d', array(
+    db_query("DELETE c, pc, t, pt FROM {oauth_common_consumer} c
+      INNER JOIN {oauth_common_provider_consumer} pc ON pc.csid = c.csid
+      LEFT JOIN {oauth_common_token} t ON t.csid = c.csid
+      LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
+      WHERE pc.uid = %d", array(
         ':uid' => $account->uid,
       ));
-    $consumers = oauth_common_user_consumers($account->uid);
-    foreach ($consumers as $consumer) {
-      db_query("DELETE FROM {oauth_common_token}
-        WHERE uid = %d OR consumer_key = '%s'", array(
-          ':uid' => $account->uid,
-          ':consumer_key' => $consumer->key,
-        ));
-    }
+    db_query("DELETE t, pt FROM {oauth_common_token} t
+      LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
+      WHERE uid = %d", array(
+        ':uid' => $account->uid,
+      ));
   }
 }
 
@@ -448,51 +424,17 @@ function oauth_common_get_request_token($consumer_token, $request_endpoint = '/o
 }
 
 /**
- * Gets stored tokens for a consumer.
- *
- * @param string $consumer_key
- *  The key of the consumer to get tokens for.
- * @param string $type
- *  The token type: 'request' or 'access'.
- * @param string $provider_tokens
- *  Optional. Pass TRUE if provider tokens should be return, FALSE if consumer
- *  tokens should be returned. Defaults to TRUE.
- * @return array
- *  An array of DrupalOAuthToken objects.
- */
-function oauth_common_get_tokens($consumer_key, $type = 'access', $provider_tokens = TRUE) {
-  $res = db_query("SELECT *
-    FROM {oauth_common_token}
-    WHERE consumer_key = '%s'
-    AND type = '%s',
-    AND provider_token = %d", array(
-      ':consumer_key' => $consumer_key,
-      ':type' => $type,
-      ':provider_token' => $provider_tokens,
-    ));
-  $tokens = array();
-  while ($token = DrupalOAuthToken::fromResult($res)) {
-    $tokens[] = $token;
-  }
-  return $tokens;
-}
-
-/**
  * Gets the tokens for a user.
  *
  * @param string $uid
  * @param string $type
  * @return array
  */
-function oauth_common_get_user_tokens($uid, $type = 'access', $provider_tokens = TRUE) {
-  $res = db_query("SELECT *
-    FROM {oauth_common_token}
-    WHERE uid = %d
-    AND type = '%s'
-    AND provider_token = %d", array(
-      ':uid' => $uid,
-      ':type' => $type,
-      ':provider_token' => $provider_tokens,
+function oauth_common_get_user_provider_tokens($uid) {
+  $res = db_query("SELECT t.*, pt.created, pt.changed, pt.services, pt.authorized FROM {oauth_common_token} t
+    INNER JOIN {oauth_common_provider_token} pt WHERE t.uid = %d AND t.type = %d", array(
+      ':uid'  => $uid,
+      ':type' => OAUTH_COMMON_TOKEN_TYPE_ACCESS,
     ));
   $tokens = array();
   while ($token = DrupalOAuthToken::fromResult($res)) {
@@ -550,18 +492,20 @@ function oauth_common_context_from_request($request) {
   $token_key = $request->get_parameter('oauth_token');
 
   if (empty($consumer_key) && !empty($token_key)) {
-    $token = DrupalOAuthToken::load($token_key, TRUE);
+    $token = DrupalOAuthToken::loadByKey($token_key, FALSE, OAUTH_COMMON_TOKEN_TYPE_REQUEST);
     if ($token) {
-      $consumer_key = $token->consumer_key;
+      $consumer = $token->consumer;
     }
   }
+
   if (!empty($consumer_key)) {
-    $consumer = DrupalOAuthConsumer::load($consumer_key, TRUE);
+    $consumer = DrupalOAuthConsumer::loadProviderByKey($consumer_key);
   }
 
   if ($consumer) {
     $context = oauth_common_context_load($consumer->context);
   }
+
   return $context;
 }
 
