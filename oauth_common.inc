@@ -111,14 +111,9 @@ function oauth_common_ahah_secret($object) {
 
 function _oauth_common_verify_body_hash($req) {
   $body_hash = $req->get_parameter('oauth_body_hash');
-  if ($body_hash) {
+  if ($body_hash && module_exists('inputstream')) {
     $hres = hash_init('sha1');
-    if (module_exists('inputstream')) {
-      $stream = fopen('drupal://input', 'r');
-    }
-    else {
-      $stream = fopen('php://input', 'r');
-    }
+    $stream = fopen('drupal://input', 'r');
     hash_update_stream($hres, $stream);
     fclose($stream);
     $sha1 = hash_final($hres, TRUE);
