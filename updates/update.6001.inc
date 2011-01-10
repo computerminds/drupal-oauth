@@ -1,5 +1,5 @@
 <?php
-// $Id: update.6001.inc,v 1.1 2010/05/20 16:16:05 hugowetterberg Exp $
+// $Id: update.6001.inc,v 1.2 2011/01/10 22:22:29 voxpelli Exp $
 
 /**
  * This update either creates a authorization levels table, or transfers the

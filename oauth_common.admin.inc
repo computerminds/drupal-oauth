@@ -1,5 +1,5 @@
 <?php
-// $Id: oauth_common.admin.inc,v 1.2 2010/11/05 20:44:46 voxpelli Exp $
+// $Id: oauth_common.admin.inc,v 1.3 2011/01/10 22:22:29 voxpelli Exp $
 
 function _oauth_common_admin() {
   $form = array();

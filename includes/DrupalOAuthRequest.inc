@@ -1,5 +1,5 @@
 <?php
-// $Id: DrupalOAuthRequest.inc,v 1.1 2010/05/20 16:16:05 hugowetterberg Exp $
+// $Id: DrupalOAuthRequest.inc,v 1.2 2011/01/10 22:22:29 voxpelli Exp $
 
 class DrupalOAuthRequest extends OAuthRequest {
   /**

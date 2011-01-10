@@ -1,5 +1,5 @@
 <?php
-// $Id$
+// $Id: oauth_common_auth_level.tpl.php,v 1.2 2011/01/10 22:22:29 voxpelli Exp $
 
 $element['left'] = array(
   '#prefix' => '<div class="oauth-common-left-panel">',

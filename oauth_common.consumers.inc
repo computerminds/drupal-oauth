@@ -1,5 +1,5 @@
 <?php
-// $Id$
+// $Id: oauth_common.consumers.inc,v 1.3 2011/01/10 22:22:29 voxpelli Exp $
 
 /**
  * Menu system callback for listing a users consumers.
