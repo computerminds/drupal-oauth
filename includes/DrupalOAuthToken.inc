@@ -123,6 +123,7 @@ class DrupalOAuthToken extends OAuthToken {
    * @return void
    */
   public static function deleteToken($key, $consumer) {
+    //TODO: Ensure backwards compatibility
     db_query("DELETE t, pt FROM {oauth_common_token} t LEFT JOIN {oauth_common_provider_token} pt ON t.tid = pt.tid
       WHERE t.key_hash = '%s' AND t.csid = %d", array(
       ':key_hash' => sha1($key),
@@ -221,6 +222,7 @@ class DrupalOAuthToken extends OAuthToken {
    *  The constructed token object or NULL if no rows could be read or construction failed
    */
   public static function fromResult($res, $consumer = FALSE) {
+    //TODO: Ensure this works with old inputs?
     if ($data = db_fetch_array($res)) {
       if (isset($data['services'])) {
         $data['services'] = json_decode($data['services']);

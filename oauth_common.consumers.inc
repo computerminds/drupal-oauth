@@ -177,6 +177,7 @@ function oauth_common_form_consumer_submit($form, &$form_state) {
   }
   // Add scheme if missing, and if the callback_url isn't out of band.
   else if ($values['callback_url'] != 'oob' && preg_match('/^http:\/\/|https:\/\//', $values['callback_url']) === 0) {
+    //TODO: What about custom callback url:s used by eg iphone-apps? We should allow them - right?
     $values['callback_url'] = 'http://' . $values['callback_url'];
   }
 

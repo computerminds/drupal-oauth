@@ -253,6 +253,7 @@ class DrupalOAuthClient {
     }
 
     // Check if we've has recieved this token previously and if so use the old one
+    //TODO: Is this safe!? What if eg. multiple users are getting the same access token from the provider?
     $this->accessToken = DrupalOAuthToken::loadByKey($params['oauth_token'], $this->consumer);
     //TODO: Can a secret change even though the token doesn't? If so it needs to be changed.
     if (!$this->accessToken) {

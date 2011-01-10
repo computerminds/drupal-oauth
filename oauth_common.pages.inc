@@ -37,6 +37,7 @@ function _oauth_common_validate_request_callback($type, $unsigned = NULL) {
 function oauth_common_page_authorized($csid = NULL) {
   // If we have an oauth_token we're acting as a consumer and just got authorized
   if (!empty($_GET['oauth_token'])) {
+    //TODO: Add documentation on how to use the callback url with
     $consumer = $csid ? DrupalOAuthConsumer::loadById($csid, FALSE) : FALSE;
     if ($consumer) {
       $request_token = DrupalOAuthToken::loadByKey($_GET['oauth_token'], $consumer, OAUTH_COMMON_TOKEN_TYPE_REQUEST);

@@ -26,6 +26,8 @@ function oauth_common_uninstall() {
 function oauth_common_schema() {
   $schema = array();
 
+  //TODO: Schemas shouldn't be translated
+
   $schema['oauth_common_context'] = array(
     'description' => 'Stores contexts for OAuth common',
     'export' => array(

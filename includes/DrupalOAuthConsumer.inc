@@ -120,6 +120,7 @@ class DrupalOAuthConsumer extends OAuthConsumer {
    * @return void
    */
   public static function deleteConsumer($csid) {
+    //TODO: Add compatibility layer?
     db_query("DELETE c, pc, t, pt FROM {oauth_common_consumer} c
       LEFT JOIN {oauth_common_provider_consumer} pc ON pc.csid = c.csid
       LEFT JOIN {oauth_common_token} t ON t.csid = c.csid
@@ -201,6 +202,7 @@ class DrupalOAuthConsumer extends OAuthConsumer {
    *  The constructed consumer object or NULL if no rows could be read or construction failed
    */
   public static function fromResult($res) {
+    //TODO: Ensure this works with old inputs?
     if ($data = db_fetch_array($res)) {
       if (!empty($data['configuration'])) {
         $data['configuration'] = unserialize($data['configuration']);

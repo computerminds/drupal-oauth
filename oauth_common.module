@@ -9,6 +9,12 @@ define('OAUTH_COMMON_TOKEN_TYPE_ACCESS', 1);
 define('OAUTH_COMMON_VERSION_1', 1); // The original 1.0 spec
 define('OAUTH_COMMON_VERSION_1_RFC', 2); // The RFC 5849 1.0 spec
 
+//TODO: Don't act as a provider by default.
+//TODO: Check for other functions with breaking changes
+//TODO: Move admin pages to more regular places
+//TODO: Add watchdog messages about deprecated methods?
+//TODO: Move provider ui related pages to provider ui
+
 /**
  * Implementation of hook_theme().
  */
