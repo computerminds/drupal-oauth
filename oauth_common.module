@@ -6,7 +6,7 @@ define('OAUTH_COMMON_CODE_BRANCH', '6.x-3.x');
 define('OAUTH_COMMON_TOKEN_TYPE_REQUEST', 0);
 define('OAUTH_COMMON_TOKEN_TYPE_ACCESS', 1);
 
-define('OAUTH_COMMON_VERSION_1', 1);     // The original 1.0 spec
+define('OAUTH_COMMON_VERSION_1', 1); // The original 1.0 spec
 define('OAUTH_COMMON_VERSION_1_RFC', 2); // The RFC 5849 1.0 spec
 
 /**
@@ -70,7 +70,7 @@ function oauth_common_perm() {
 
   // Add seperate permissions for creating and
   // authorizing consumers in each context.
-  foreach(oauth_common_context_list() as $name => $title) {
+  foreach (oauth_common_context_list() as $name => $title) {
     $permissions[] = sprintf('oauth register consumers in %s', $name);
     $permissions[] = sprintf('oauth authorize consumers in %s', $name);
   }
@@ -365,7 +365,7 @@ function oauth_common_can_create_consumers($account = NULL) {
 
   $can_register_consumers = user_access('oauth register any consumers', $account);
   if (!$can_register_consumers) {
-    foreach(oauth_common_context_list() as $context => $title) {
+    foreach (oauth_common_context_list() as $context => $title) {
       $can_register_consumers = $can_register_consumers || user_access(sprintf('oauth register consumers in %s', $context), $account);
     }
   }

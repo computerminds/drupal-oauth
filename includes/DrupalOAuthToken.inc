@@ -16,7 +16,7 @@ class DrupalOAuthToken extends OAuthToken {
   public $in_database = FALSE;
 
   public function __construct($key, $secret, $consumer, $params = array()) {
-    foreach($params as $param_key => $value) {
+    foreach ($params as $param_key => $value) {
       if (isset($this->$param_key)) {
         $this->$param_key = $value;
       }

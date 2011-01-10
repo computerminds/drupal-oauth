@@ -36,9 +36,9 @@ function _oauth_common_admin_settings_validate($form, $form_state) {
  */
 function oauth_common_list_context($js = NULL) {
   $header = array(
-    array('data' => t('Title'),          'class' => 'oauth-common-contexts-title'),
-    array('data' => t('Storage'),        'class' => 'oauth-common-contexts-storage'),
-    array('data' => t('Operations'),     'class' => 'oauth-common-contexts-operations'),
+    array('data' => t('Title'),      'class' => 'oauth-common-contexts-title'),
+    array('data' => t('Storage'),    'class' => 'oauth-common-contexts-storage'),
+    array('data' => t('Operations'), 'class' => 'oauth-common-contexts-operations'),
   );
 
   $contexts = oauth_common_context_load_all();
@@ -201,7 +201,7 @@ function oauth_common_edit_form_context(&$form_state, $context) {
       '#title' => t('Supported signature methods'),
       '#options' => $sign_methods,
       '#default_value' => !empty($context->authorization_options['signature_methods']) ?
-         $context->authorization_options['signature_methods']:
+         $context->authorization_options['signature_methods'] :
          array('HMAC-SHA1', 'HMAC-SHA256', 'HMAC-SHA384', 'HMAC-SHA512'),
     )
   );

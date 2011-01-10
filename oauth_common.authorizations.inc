@@ -8,11 +8,11 @@
 
 function oauth_common_page_user_authorizations($account) {
   $header = array(
-    array('data' => t('Application'),    'class' => "oauth-common-authorization-application"),
-    array('data' => t('Key'),            'class' => "oauth-common-authorization-key"),
-    array('data' => t('Created'),        'class' => "oauth-common-authorization-created"),
-    array('data' => t('Expires'),        'class' => "oauth-common-authorization-expires"),
-    array('data' => t('Operations'),     'class' => "oauth-common-authorization-operations"),
+    array('data' => t('Application'), 'class' => "oauth-common-authorization-application"),
+    array('data' => t('Key'),         'class' => "oauth-common-authorization-key"),
+    array('data' => t('Created'),     'class' => "oauth-common-authorization-created"),
+    array('data' => t('Expires'),     'class' => "oauth-common-authorization-expires"),
+    array('data' => t('Operations'),  'class' => "oauth-common-authorization-operations"),
   );
 
   $access_tokens = oauth_common_get_user_provider_tokens($account->uid);
@@ -187,7 +187,7 @@ function oauth_common_form_authorization_submit($form, $form_state) {
   if (isset($values['levels'])) {
     $token->services = array_keys(array_filter($values['levels']));
   }
-  
+
   $token->authorized = $values['authorized'];
   $token->write(TRUE);
 

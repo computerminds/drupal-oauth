@@ -28,7 +28,7 @@ class DrupalOAuthConsumer extends OAuthConsumer {
       $params['callback_url'] = $callback_url;
     }
 
-    foreach($params as $param_key => $value) {
+    foreach ($params as $param_key => $value) {
       if (isset($this->$param_key)) {
         $this->$param_key = $value;
       }

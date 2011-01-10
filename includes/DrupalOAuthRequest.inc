@@ -22,7 +22,7 @@ class DrupalOAuthRequest extends OAuthRequest {
         $q = FALSE;
       }
       // Check that the q parameter hasn't been created or altered by drupal
-      elseif(isset($_GET['q'])) {
+      elseif (isset($_GET['q'])) {
         $get = array();
         parse_str($_SERVER['QUERY_STRING'], $get);
         // The q parameter was in the original request, make sure it hasn't been altered

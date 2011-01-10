@@ -80,7 +80,7 @@ function oauth_common_verify_request() {
       }
     }
   }
-  return array(FALSE, NULL,NULL);
+  return array(FALSE, NULL, NULL);
 }
 
 /**

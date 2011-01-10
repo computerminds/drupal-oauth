@@ -376,7 +376,7 @@ class DrupalOAuthClient {
   protected function interpretResponse($res) {
     list($headers, $body) = preg_split('/\r\n\r\n/', $res, 2);
 
-    $obj = (object)array(
+    $obj = (object) array(
       'headers' => $headers,
       'body' => $body,
     );

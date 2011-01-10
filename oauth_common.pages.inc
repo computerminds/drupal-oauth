@@ -1,27 +1,27 @@
 <?php
 // $Id$
 
-function _oauth_common_validate_request_callback($type, $unsigned=NULL) {
+function _oauth_common_validate_request_callback($type, $unsigned = NULL) {
   try {
     module_load_include('inc', 'oauth_common');
 
     list($signed, $consumer, $token) = oauth_common_verify_request();
 
-    if ($consumer==NULL) {
+    if ($consumer == NULL) {
       throw new OAuthException('Missing consumer token');
     }
 
-    if (!$signed && $unsigned!='unsigned') {
+    if (!$signed && $unsigned != 'unsigned') {
       throw new OAuthException('The request wasn\'t signed');
     }
 
-    if ($token==NULL && $type=='access token') {
+    if ($token == NULL && $type == 'access token') {
       throw new OAuthException('Missing access token');
     }
   }
   catch (OAuthException $e) {
     drupal_set_header('HTTP/1.0 401 Unauthorized: ' . $e->getMessage());
-    drupal_set_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute'=>TRUE))));
+    drupal_set_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute' => TRUE))));
   }
   exit;
 }
@@ -88,7 +88,7 @@ function oauth_common_form_authorize() {
     // There's some strange bug in the ?destination=... handling
     // This is not exactly beautiful, but it gets the work done
     // TODO: Find out why!
-    if(drupal_substr($_SERVER['REQUEST_URI'], 0, 2)=='//') {
+    if (drupal_substr($_SERVER['REQUEST_URI'], 0, 2) == '//') {
       header('Location: ' . drupal_substr($_SERVER['REQUEST_URI'], 1), TRUE, 302);
     }
 
@@ -287,7 +287,7 @@ function oauth_common_form_authorize_submit(&$form, &$form_state) {
 
 function _oauth_common_glue_url($parsed) {
   $uri = isset($parsed['scheme']) ? $parsed['scheme'] . '://' : '';
-  $uri .= isset($parsed['user']) ? $parsed['user'] . (isset($parsed['pass']) ? ':'.$parsed['pass'] : '').'@' : '';
+  $uri .= isset($parsed['user']) ? $parsed['user'] . (isset($parsed['pass']) ? ':' . $parsed['pass'] : '') . '@' : '';
   $uri .= isset($parsed['host']) ? $parsed['host'] : '';
   $uri .= isset($parsed['port']) ? ':' . $parsed['port'] : '';
 
@@ -354,6 +354,6 @@ function oauth_common_callback_access_token() {
   }
   catch (OAuthException $e) {
     drupal_set_header('HTTP/1.0 401 Unauthorized: ' . $e->getMessage());
-    drupal_set_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute'=>TRUE))));
+    drupal_set_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute' => TRUE))));
   }
 }

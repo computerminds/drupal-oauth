@@ -4,17 +4,17 @@
 /**
  * Menu system callback for listing a users consumers.
  *
- * @param object $account 
+ * @param object $account
  */
 function oauth_common_page_user_consumers($account) {
   module_load_include('inc', 'oauth_common');
 
   $ci = oauth_common_user_consumers($account->uid);
   $header = array(
-    array('data' => t('Name'),        'class' => 'oauth-common-consumer-name'),
-    array('data' => t('Key'),         'class' => 'oauth-common-consumer-key'),
-    array('data' => t('Created'),     'class' => 'oauth-common-consumer-created'),
-    array('data' => t('Operations'),  'class' => 'oauth-common-consumer-operations'),
+    array('data' => t('Name'),       'class' => 'oauth-common-consumer-name'),
+    array('data' => t('Key'),        'class' => 'oauth-common-consumer-key'),
+    array('data' => t('Created'),    'class' => 'oauth-common-consumer-created'),
+    array('data' => t('Operations'), 'class' => 'oauth-common-consumer-operations'),
   );
   $rows = array();
 
@@ -113,12 +113,12 @@ function oauth_common_form_consumer(&$form_state, $consumer) {
   }
   else {
     $allowed_contexts = array();
-    foreach(oauth_common_context_list() as $context => $title) {
+    foreach (oauth_common_context_list() as $context => $title) {
       if (user_access(sprintf('oauth register consumers in %s', $context))) {
         $allowed_contexts[$context] = $title;
       }
     }
-    
+
     $form['context'] = array(
       '#type' => 'select',
       '#title' => t('Application context'),
@@ -205,7 +205,7 @@ function oauth_common_form_consumer_submit($form, &$form_state) {
   else {
     drupal_set_message(t('Added the consumer @name', array('@name' => $v['name'])));
   }
-  
+
   drupal_goto(sprintf('user/%d/oauth/consumers', $consumer->uid));
 }
 
@@ -240,6 +240,6 @@ function oauth_common_form_consumer_delete_submit($form, &$form_state) {
 
   $consumer->delete();
   drupal_set_message(t('Deleted the consumer @name', array('@name' => $consumer->name)));
-  
+
   drupal_goto(sprintf('user/%d/oauth/consumers', $consumer->uid));
 }
