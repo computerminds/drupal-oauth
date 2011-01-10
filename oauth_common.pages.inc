@@ -38,7 +38,7 @@ function oauth_common_page_authorized() {
 
       $access_token = $client->getAccessToken(NULL, array('verifier' => $verifier));
       if ($access_token) {
-        // We recieved an old token - don't update
+        // We recieved a new token - save it
         if (!$access_token->in_database) {
           $access_token->write();
         }
@@ -258,14 +258,13 @@ function oauth_common_form_authorize_submit(&$form, &$form_state) {
 
   // Add services
   if ($values['full_access']) { // TODO: Full access should be a configurable auth level
-    $token->services[] = '*';
+    $token->services = array('*');
+  }
+  elseif (!empty($values['levels'])) {
+    $token->services = array_keys(array_filter($values['levels']));
   }
   else {
-    foreach ($context->authorization_levels as $name => $level) {
-      if ($values['levels'][$name]) {
-        $token->services[] = $name;
-      }
-    }
+    $token->services = array();
   }
 
   $token->write(TRUE);
@@ -321,7 +320,7 @@ function oauth_common_callback_request_token() {
   }
   catch (OAuthException $e) {
     drupal_set_header('HTTP/1.0 401 Unauthorized: ' . $e->getMessage());
-    drupal_set_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute'=>TRUE))));
+    drupal_set_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute' => TRUE))));
   }
 }
 
