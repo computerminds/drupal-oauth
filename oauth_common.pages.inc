@@ -1,6 +1,9 @@
 <?php
 // $Id$
 
+/**
+ * Combined menu callback for tests of consumers and access tokens
+ */
 function _oauth_common_validate_request_callback($type, $unsigned = NULL) {
   try {
     module_load_include('inc', 'oauth_common');
@@ -12,7 +15,7 @@ function _oauth_common_validate_request_callback($type, $unsigned = NULL) {
     }
 
     if (!$signed && $unsigned != 'unsigned') {
-      throw new OAuthException('The request wasn\'t signed');
+      throw new OAuthException("The request wasn't signed");
     }
 
     if ($token == NULL && $type == 'access token') {
@@ -26,6 +29,11 @@ function _oauth_common_validate_request_callback($type, $unsigned = NULL) {
   exit;
 }
 
+/**
+ * Menu callback for when something has been authorized - used in both client and provider flow
+ *
+ * @param $csid Should contain the id of the consumer when used in the client flow
+ */
 function oauth_common_page_authorized($csid = NULL) {
   // If we have an oauth_token we're acting as a consumer and just got authorized
   if (!empty($_GET['oauth_token'])) {
@@ -212,6 +220,9 @@ function oauth_common_form_authorize() {
   }
 }
 
+/**
+ * Validation of the form for granting access to the consumer
+ */
 function oauth_common_form_authorize_validate($form, &$form_state) {
   $values = $form_state['values'];
   $got_permission = FALSE;
@@ -238,6 +249,9 @@ function oauth_common_form_authorize_validate($form, &$form_state) {
   }
 }
 
+/**
+ * Form submit handler that grants access to the consumer
+ */
 function oauth_common_form_authorize_submit(&$form, &$form_state) {
   global $user;
   $values = $form_state['values'];
@@ -285,6 +299,9 @@ function oauth_common_form_authorize_submit(&$form, &$form_state) {
   }
 }
 
+/**
+ * Constructs the url to which to return someone who has asked for access to a consumer
+ */
 function _oauth_common_glue_url($parsed) {
   $uri = isset($parsed['scheme']) ? $parsed['scheme'] . '://' : '';
   $uri .= isset($parsed['user']) ? $parsed['user'] . (isset($parsed['pass']) ? ':' . $parsed['pass'] : '') . '@' : '';

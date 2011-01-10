@@ -572,6 +572,11 @@ function oauth_common_context_list() {
   return $return;
 }
 
+/**
+ * Finds the current version of the OAuth module, used in eg. user agents
+ *
+ * @return string
+ */
 function _oauth_common_version() {
   static $version;
   if (!isset($version)) {
