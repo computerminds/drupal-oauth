@@ -71,6 +71,10 @@ class DrupalOAuthDataStore extends OAuthDataStore {
    *   case it doesn't exist.
    */
   public function lookup_nonce($consumer, $token, $nonce, $timestamp) {
+    if (strlen($nonce) > 255) {
+      throw new OAuthException('Nonces may not be longer than 255 characters');
+    }
+
     $stored_nonce = db_result(db_query(
       "SELECT nonce FROM {oauth_common_nonce}
       WHERE nonce = '%s' AND timestamp <= %d and token_key = '%s'", array(

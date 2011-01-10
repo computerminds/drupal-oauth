@@ -4,6 +4,7 @@ OAuth 6.x-3.0-beta4, 2011-XX-XX
 ------------------------------
 by voxpelli: Better coding style
 #1002482 by voxpelli: Large database refactoring focused on basing relations on internal id numbers
+by voxpelli: Improved nonces, nonces can now be longer and too long nonces will throw errors
 by voxpelli: Removed consumer UI as it became complicated with new DB and there's no apparent need for it
 
 OAuth 6.x-3.0-beta3, 2010-11-05
