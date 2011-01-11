@@ -10,39 +10,6 @@ define('OAUTH_COMMON_VERSION_1', 1); // The original 1.0 spec
 define('OAUTH_COMMON_VERSION_1_RFC', 2); // The RFC 5849 1.0 spec
 
 /**
- * Implementation hook_autoload_info().
- */
-function oauth_common_autoload_info() {
-  $lib = array('file' => 'lib/OAuth.php');
-
-  return array(
-    'DrupalOAuthServer'         => array('file' => 'includes/DrupalOAuthServer.inc'),
-    'DrupalOAuthDataStore'      => array('file' => 'includes/DrupalOAuthDataStore.inc'),
-    'DrupalOAuthRequest'        => array('file' => 'includes/DrupalOAuthRequest.inc'),
-    'DrupalOAuthToken'          => array('file' => 'includes/DrupalOAuthToken.inc'),
-    'DrupalOAuthConsumer'       => array('file' => 'includes/DrupalOAuthConsumer.inc'),
-    'DrupalOAuthClient'         => array('file' => 'includes/DrupalOAuthClient.inc'),
-    'OAuthSignatureMethod_HMAC' => array('file' => 'includes/OAuthSignatureMethod_HMAC.inc'),
-    'OAuthSignatureMethod_PLAINTEXT' => $lib,
-    'OAuthSignatureMethod' => $lib,
-    'OAuthServer'          => $lib,
-    'OAuthDataStore'       => $lib,
-    'OAuthRequest'         => $lib,
-    'OAuthConsumer'        => $lib,
-    'OAuthToken'           => $lib,
-    'OAuthUtil'            => $lib,
-  );
-}
-
-/**
- * Implementation of hook_enable().
- */
-function oauth_common_enable() {
-  // Flush the autoload caches so that our classes are registered
-  autoload_flush_caches();
-}
-
-/**
  * Implementation of hook_theme().
  */
 function oauth_common_theme() {
