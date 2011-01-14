@@ -82,10 +82,10 @@ function oauth_common_schema() {
     ),
   );
 
-  $schema['oauth_common_consumer'] = _oauth_common_consumer_schema_1();
-  $schema['oauth_common_provider_consumer'] = _oauth_common_provider_consumer_schema_1();
-  $schema['oauth_common_token'] = _oauth_common_token_schema_1();
-  $schema['oauth_common_provider_token'] = _oauth_common_provider_token_schema_1();
+  $schema['oauth_common_consumer'] = _oauth_common_consumer_schema();
+  $schema['oauth_common_provider_consumer'] = _oauth_common_provider_consumer_schema();
+  $schema['oauth_common_token'] = _oauth_common_token_schema();
+  $schema['oauth_common_provider_token'] = _oauth_common_provider_token_schema();
 
   $schema['oauth_common_nonce'] = array(
     'description' => 'Stores timestamp against nonce for repeat attacks.',

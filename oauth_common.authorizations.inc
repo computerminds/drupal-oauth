@@ -19,10 +19,7 @@ function oauth_common_page_user_authorizations($account) {
   $rows = array();
 
   foreach ($access_tokens as $token) {
-    if (!isset($consumers[$token->csid])) {
-      $consumers[$token->csid] = DrupalOAuthConsumer::loadById($token->csid);
-    }
-    $consumer = $consumers[$token->csid];
+    $consumer = $token->consumer;
 
     $data = array(
       'application' => array(

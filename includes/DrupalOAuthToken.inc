@@ -3,7 +3,6 @@
 
 class DrupalOAuthToken extends OAuthToken {
   public $tid = 0;
-  public $csid = 0;
   public $expires = 0;
   public $type = OAUTH_COMMON_TOKEN_TYPE_REQUEST;
   public $uid = 0;

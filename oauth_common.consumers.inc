@@ -66,8 +66,11 @@ function oauth_common_page_user_consumers($account) {
  * Menu system callback for the add consumer page.
  */
 function oauth_common_add_consumer($account) {
-  $consumer = new DrupalOAuthConsumer(user_password(32), user_password(32), array('callback_url' => ''));
-  $consumer->uid = $account->uid;
+  $consumer = new DrupalOAuthConsumer(user_password(32), user_password(32), array(
+    'callback_url' => '',
+    'uid' => $account->uid,
+    'provider_consumer' => TRUE,
+  ));
   return drupal_get_form('oauth_common_form_consumer', $consumer);
 }
 
