@@ -4,21 +4,17 @@
 /**
  * Menu system callback for listing a users consumers.
  *
- * @param object $account 
+ * @param object $account
  */
-function oauth_common_page_user_consumers($account, $provider = TRUE) {
+function oauth_common_page_user_consumers($account) {
   module_load_include('inc', 'oauth_common');
 
-  $url = $provider ?
-    'user/%d/oauth/consumer/%s' :
-    'admin/settings/oauth/consumers/%s';
-
-  $ci = oauth_common_user_consumers($account->uid, $provider);
+  $ci = oauth_common_user_consumers($account->uid);
   $header = array(
-    array('data' => t('Name'),        'class' => 'oauth-common-consumer-name'),
-    array('data' => t('Key'),         'class' => 'oauth-common-consumer-key'),
-    array('data' => t('Created'),     'class' => 'oauth-common-consumer-created'),
-    array('data' => t('Operations'),  'class' => 'oauth-common-consumer-operations'),
+    array('data' => t('Name'),       'class' => 'oauth-common-consumer-name'),
+    array('data' => t('Key'),        'class' => 'oauth-common-consumer-key'),
+    array('data' => t('Created'),    'class' => 'oauth-common-consumer-created'),
+    array('data' => t('Operations'), 'class' => 'oauth-common-consumer-operations'),
   );
   $rows = array();
 
@@ -42,11 +38,11 @@ function oauth_common_page_user_consumers($account, $provider = TRUE) {
     if (oauth_common_can_edit_consumer($consumer)) {
       $operations[] = array(
         'title' => t('Edit'),
-        'href'  => sprintf($url, $account->uid, $consumer->key),
+        'href'  => sprintf('user/%d/oauth/consumer/%s', $account->uid, $consumer->csid),
       );
       $operations[] = array(
         'title' => t('Delete'),
-        'href'  => sprintf($url, $account->uid, $consumer->key) . '/delete',
+        'href'  => sprintf('user/%d/oauth/consumer/%s', $account->uid, $consumer->csid) . '/delete',
       );
     }
 
@@ -70,8 +66,11 @@ function oauth_common_page_user_consumers($account, $provider = TRUE) {
  * Menu system callback for the add consumer page.
  */
 function oauth_common_add_consumer($account) {
-  $consumer = new DrupalOAuthConsumer(user_password(32), user_password(32), '', TRUE);
-  $consumer->uid = $account->uid;
+  $consumer = new DrupalOAuthConsumer(user_password(32), user_password(32), array(
+    'callback_url' => '',
+    'uid' => $account->uid,
+    'provider_consumer' => TRUE,
+  ));
   return drupal_get_form('oauth_common_form_consumer', $consumer);
 }
 
@@ -117,12 +116,12 @@ function oauth_common_form_consumer(&$form_state, $consumer) {
   }
   else {
     $allowed_contexts = array();
-    foreach(oauth_common_context_list() as $context => $title) {
+    foreach (oauth_common_context_list() as $context => $title) {
       if (user_access(sprintf('oauth register consumers in %s', $context))) {
         $allowed_contexts[$context] = $title;
       }
     }
-    
+
     $form['context'] = array(
       '#type' => 'select',
       '#title' => t('Application context'),
@@ -131,13 +130,13 @@ function oauth_common_form_consumer(&$form_state, $consumer) {
     );
   }
 
-  $form['key'] = array(
-    '#type' => 'item',
-    '#title' => t('Key'),
-    '#value' => $consumer->key,
-  );
-
   if ($consumer->in_database) {
+    $form['key'] = array(
+      '#type' => 'item',
+      '#title' => t('Key'),
+      '#value' => $consumer->key,
+    );
+
     $form['secret'] = array(
       '#type' => 'item',
       '#prefix' => '<div id="consumer-secret-wrapper">',
@@ -149,18 +148,11 @@ function oauth_common_form_consumer(&$form_state, $consumer) {
       '#type' => 'button',
       '#value' => t('Show secret'),
       '#ahah' => array(
-        'path' => "user/{$consumer->uid}/oauth/consumer/{$consumer->key}/ahah/secret",
+        'path' => "user/{$consumer->uid}/oauth/consumer/{$consumer->csid}/ahah/secret",
         'wrapper' => 'consumer-secret-wrapper',
         'method' => 'replace',
       ),
       '#suffix' => '</div>',
-    );
-  }
-  else {
-    $form['secret'] = array(
-      '#type' => 'item',
-      '#title' => t('Secret'),
-      '#value' => $consumer->secret
     );
   }
 
@@ -201,7 +193,7 @@ function oauth_common_form_consumer_submit($form, &$form_state) {
 
   // Update or create the consumer.
   $update = $consumer->in_database;
-  $consumer->write($update);
+  $consumer->write();
 
   if ($update) {
     drupal_set_message(t('Updated the consumer @name', array('@name' => $v['name'])));
@@ -209,7 +201,7 @@ function oauth_common_form_consumer_submit($form, &$form_state) {
   else {
     drupal_set_message(t('Added the consumer @name', array('@name' => $v['name'])));
   }
-  
+
   drupal_goto(sprintf('user/%d/oauth/consumers', $consumer->uid));
 }
 
@@ -240,10 +232,10 @@ function oauth_common_form_consumer_delete($form_state, $consumer) {
  * Submit handler for oauth_common_form_consumer_delete.
  */
 function oauth_common_form_consumer_delete_submit($form, &$form_state) {
-  $consumer = $form_state['values']['consumer'];
+  $consumer = $form_state['values']['consumer_object'];
 
   $consumer->delete();
   drupal_set_message(t('Deleted the consumer @name', array('@name' => $consumer->name)));
-  
+
   drupal_goto(sprintf('user/%d/oauth/consumers', $consumer->uid));
 }

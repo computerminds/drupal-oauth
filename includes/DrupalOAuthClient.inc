@@ -134,10 +134,8 @@ class DrupalOAuthClient {
       $this->version = OAUTH_1;
     }
 
-    $this->requestToken = new DrupalOAuthToken($params['oauth_token'], $params['oauth_token_secret'], array(
-      'type' => 'request',
-      'consumer_key' => $this->consumer->key,
-      'provider_token' => FALSE,
+    $this->requestToken = new DrupalOAuthToken($params['oauth_token'], $params['oauth_token_secret'], $this->consumer, array(
+      'type'    => OAUTH_COMMON_TOKEN_TYPE_REQUEST,
       'version' => $this->version,
     ));
 
@@ -255,13 +253,11 @@ class DrupalOAuthClient {
     }
 
     // Check if we've has recieved this token previously and if so use the old one
-    $this->accessToken = DrupalOAuthToken::load($params['oauth_token'], FALSE);
+    $this->accessToken = DrupalOAuthToken::loadByKey($params['oauth_token'], $this->consumer);
     //TODO: Can a secret change even though the token doesn't? If so it needs to be changed.
     if (!$this->accessToken) {
-      $this->accessToken = new DrupalOAuthToken($params['oauth_token'], $params['oauth_token_secret'], array(
-        'type' => 'access',
-        'consumer_key' => $this->consumer->key,
-        'provider_token' => FALSE,
+      $this->accessToken = new DrupalOAuthToken($params['oauth_token'], $params['oauth_token_secret'], $this->consumer, array(
+        'type' => OAUTH_COMMON_TOKEN_TYPE_ACCESS,
       ));
     }
 
@@ -380,7 +376,7 @@ class DrupalOAuthClient {
   protected function interpretResponse($res) {
     list($headers, $body) = preg_split('/\r\n\r\n/', $res, 2);
 
-    $obj = (object)array(
+    $obj = (object) array(
       'headers' => $headers,
       'body' => $body,
     );

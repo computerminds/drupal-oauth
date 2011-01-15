@@ -6,24 +6,14 @@
  *
  * @param int $uid
  *  User ID to retrieve consumer info for.
- * @param mixed $provider_consumer
- *  Optional. Pass TRUE or FALSE to load either provider or consumer consumers.
- *  Omit or pass NULL to get both.
  * @return array
  *  An array of consumer info
  */
-function oauth_common_user_consumers($uid, $provider_consumer = NULL) {
-  $query = 'SELECT * FROM {oauth_common_consumer}
-    WHERE uid = %d';
-  $args = array(
-    ':uid' => $uid,
-  );
-  if ($provider_consumer !== NULL) {
-    $query .= '
-    AND provider_consumer = %d';
-    $args[':provider_consumer'] = $provider_consumer;
-  }
-  $result = db_query($query, $args);
+function oauth_common_user_consumers($uid) {
+  $result = db_query($query = 'SELECT c.secret, c.configuration, pc.*
+    FROM {oauth_common_consumer} c
+    INNER JOIN {oauth_common_provider_consumer} pc ON pc.csid = c.csid
+    WHERE pc.uid = %d' . $where, array(':uid' => $uid));
 
   $consumers = array();
   while ($consumer = DrupalOAuthConsumer::fromResult($result)) {
@@ -42,8 +32,9 @@ function oauth_common_user_consumers($uid, $provider_consumer = NULL) {
  *  An array of consumer info
  */
 function oauth_common_user_access_tokens($uid) {
-  $result = db_query("SELECT * FROM {oauth_common_token} WHERE uid = %d AND type = 'access'", array(
+  $result = db_query("SELECT * FROM {oauth_common_token} WHERE uid = %d AND type = '%d'", array(
     ':uid' => $uid,
+    ':type' => OAUTH_COMMON_TOKEN_TYPE_ACCESS,
   ));
   $tokens = array();
   while ($token = DrupalOAuthToken::fromResult($result)) {
@@ -64,7 +55,7 @@ function oauth_common_verify_request() {
   // Verify
   $consumer_key = $req->get_parameter('oauth_consumer_key');
   if (!empty($consumer_key)) {
-    $consumer = DrupalOAuthConsumer::load($consumer_key, TRUE);
+    $consumer = DrupalOAuthConsumer::loadProviderByKey($consumer_key);
     if ($consumer) {
       $context = oauth_common_context_load($consumer->context);
 
@@ -82,14 +73,14 @@ function oauth_common_verify_request() {
       }
       else {
         $token_key = $req->get_parameter('oauth_token');
-        if (empty($token_key) || !($token=DrupalOAuthToken::load($token_key, TRUE))) {
+        if (empty($token_key) || !($token = DrupalOAuthToken::loadbyKey($token_key, $consumer))) {
           $token = NULL;
         }
         return array(FALSE, $consumer, $token);
       }
     }
   }
-  return array(FALSE, NULL,NULL);
+  return array(FALSE, NULL, NULL);
 }
 
 /**
@@ -120,14 +111,9 @@ function oauth_common_ahah_secret($object) {
 
 function _oauth_common_verify_body_hash($req) {
   $body_hash = $req->get_parameter('oauth_body_hash');
-  if ($body_hash) {
+  if ($body_hash && module_exists('inputstream')) {
     $hres = hash_init('sha1');
-    if (module_exists('inputstream')) {
-      $stream = fopen('drupal://input', 'r');
-    }
-    else {
-      $stream = fopen('php://input', 'r');
-    }
+    $stream = fopen('drupal://input', 'r');
     hash_update_stream($hres, $stream);
     fclose($stream);
     $sha1 = hash_final($hres, TRUE);

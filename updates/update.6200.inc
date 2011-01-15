@@ -14,7 +14,7 @@ function _oauth_common_update_6200() {
 
   // Fetch the authorization levels and create contexts from them
   $res = db_query("SELECT * FROM {oauth_authorization_levels}");
-  while($l = db_fetch_array($res)) {
+  while ($l = db_fetch_array($res)) {
     $name = $l['name'];
     $context = $l['context'];
     unset($l['name'], $l['context']);

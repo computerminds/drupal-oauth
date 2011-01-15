@@ -9,3 +9,12 @@ suggests[] = inputstream
 
 core = 6.x
 php = 5.2
+
+files[] = lib/OAuth.php
+files[] = includes/DrupalOAuthServer.inc
+files[] = includes/DrupalOAuthDataStore.inc
+files[] = includes/DrupalOAuthRequest.inc
+files[] = includes/DrupalOAuthToken.inc
+files[] = includes/DrupalOAuthConsumer.inc
+files[] = includes/DrupalOAuthClient.inc
+files[] = includes/OAuthSignatureMethod_HMAC.inc
