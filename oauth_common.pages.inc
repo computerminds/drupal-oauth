@@ -1,5 +1,5 @@
 <?php
-// $Id: oauth_common.pages.inc,v 1.5 2011/01/10 22:22:29 voxpelli Exp $
+// $Id: oauth_common.pages.inc,v 1.6 2011/01/15 20:10:01 voxpelli Exp $
 
 /**
  * Combined menu callback for tests of consumers and access tokens

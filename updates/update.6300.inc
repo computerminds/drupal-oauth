@@ -1,5 +1,5 @@
 <?php
-// $Id$
+// $Id: update.6300.inc,v 1.1 2011/01/15 20:10:02 voxpelli Exp $
 
 /**
  * This update massively refactors the database.

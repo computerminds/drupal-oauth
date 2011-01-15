@@ -1,5 +1,5 @@
 <?php
-// $Id: update.6200.inc,v 1.2 2011/01/10 22:22:29 voxpelli Exp $
+// $Id: update.6200.inc,v 1.3 2011/01/15 20:10:02 voxpelli Exp $
 
 /**
  * This update turns the contexts into ctools-manageable entities and migrates

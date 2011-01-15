@@ -1,5 +1,5 @@
 <?php
-// $Id: DrupalOAuthClient.inc,v 1.2 2010/07/18 17:05:39 voxpelli Exp $
+// $Id: DrupalOAuthClient.inc,v 1.3 2011/01/15 20:10:02 voxpelli Exp $
 
 class DrupalOAuthClient {
   public $version = OAUTH_COMMON_VERSION_1_RFC;
