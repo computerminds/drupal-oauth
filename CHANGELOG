@@ -7,6 +7,7 @@ by voxpelli: Better coding style
 by voxpelli: Improved nonces, nonces can now be longer and too long nonces will throw errors
 by voxpelli: Removed consumer UI as it became complicated with new DB and there's no apparent need for it
 by voxpelli: Updated to use Autoload 6.x-2.0:s D7 backport for specifying included classes
+by voxpelli: Don't show key/secret on consumer adding
 
 OAuth 6.x-3.0-beta3, 2010-11-05
 ------------------------------

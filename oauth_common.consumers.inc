@@ -130,13 +130,13 @@ function oauth_common_form_consumer(&$form_state, $consumer) {
     );
   }
 
-  $form['key'] = array(
-    '#type' => 'item',
-    '#title' => t('Key'),
-    '#value' => $consumer->key,
-  );
-
   if ($consumer->in_database) {
+    $form['key'] = array(
+      '#type' => 'item',
+      '#title' => t('Key'),
+      '#value' => $consumer->key,
+    );
+
     $form['secret'] = array(
       '#type' => 'item',
       '#prefix' => '<div id="consumer-secret-wrapper">',
@@ -153,13 +153,6 @@ function oauth_common_form_consumer(&$form_state, $consumer) {
         'method' => 'replace',
       ),
       '#suffix' => '</div>',
-    );
-  }
-  else {
-    $form['secret'] = array(
-      '#type' => 'item',
-      '#title' => t('Secret'),
-      '#value' => $consumer->secret
     );
   }
 
