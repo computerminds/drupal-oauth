@@ -8,7 +8,8 @@ by voxpelli: Improved nonces, nonces can now be longer and too long nonces will 
 by voxpelli: Removed consumer UI as it became complicated with new DB and there's no apparent need for it
 by voxpelli: Updated to use Autoload 6.x-2.0:s D7 backport for specifying included classes
 by voxpelli: Don't show key/secret on consumer adding
-#1017220 by voxpelli: Deactivated body_hash-checking when Inpustream isn't installed
+#1017220 by voxpelli: Deactivated body_hash-checking when Inpustream isn't installed #
+#1024812 by voxpelli: Fix for deleting consumer
 
 OAuth 6.x-3.0-beta3, 2010-11-05
 ------------------------------
