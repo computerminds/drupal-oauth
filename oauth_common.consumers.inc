@@ -232,7 +232,7 @@ function oauth_common_form_consumer_delete($form_state, $consumer) {
  * Submit handler for oauth_common_form_consumer_delete.
  */
 function oauth_common_form_consumer_delete_submit($form, &$form_state) {
-  $consumer = $form_state['values']['consumer'];
+  $consumer = $form_state['values']['consumer_object'];
 
   $consumer->delete();
   drupal_set_message(t('Deleted the consumer @name', array('@name' => $consumer->name)));
