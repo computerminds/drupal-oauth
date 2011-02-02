@@ -78,14 +78,14 @@ class DrupalOAuthDataStore extends OAuthDataStore {
     $stored_nonce = db_result(db_query(
       "SELECT nonce FROM {oauth_common_nonce}
       WHERE nonce = '%s' AND timestamp <= %d and token_key = '%s'", array(
-        ':nonce'     => $nonce,
-        ':timestamp' => $timestamp,
-        ':token_key' => $token ? $token->key : '',
-      )));
+      ':nonce' => $nonce,
+      ':timestamp' => $timestamp,
+      ':token_key' => $token ? $token->key : '',
+    )));
 
     if (!$stored_nonce) {
       $values = array(
-        'nonce'     => $nonce,
+        'nonce' => $nonce,
         'timestamp' => $timestamp,
         'token_key' => $token ? $token->key : '',
       );
@@ -106,8 +106,8 @@ class DrupalOAuthDataStore extends OAuthDataStore {
    */
   function new_request_token($consumer, $callback = NULL) {
     $token = new DrupalOAuthToken(user_password(32), user_password(32), $consumer, array(
-      'type'    => OAUTH_COMMON_TOKEN_TYPE_REQUEST,
-      'uid'     => 0,
+      'type' => OAUTH_COMMON_TOKEN_TYPE_REQUEST,
+      'uid' => 0,
       'expires' => time() + variable_get('oauth_common_request_token_lifetime', 7200),
     ));
     $token->write();
@@ -127,9 +127,9 @@ class DrupalOAuthDataStore extends OAuthDataStore {
 
     if ($token_old && $token_old->authorized) {
       $token_new = new DrupalOAuthToken(user_password(32), user_password(32), $consumer, array(
-        'type'       => OAUTH_COMMON_TOKEN_TYPE_ACCESS,
-        'uid'        => $token_old->uid,
-        'services'   => isset($token_old->services) ? $token_old->services : NULL,
+        'type' => OAUTH_COMMON_TOKEN_TYPE_ACCESS,
+        'uid' => $token_old->uid,
+        'services' => isset($token_old->services) ? $token_old->services : NULL,
         'authorized' => 1,
       ));
       $token_old->delete();

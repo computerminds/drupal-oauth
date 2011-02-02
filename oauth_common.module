@@ -164,13 +164,13 @@ function oauth_common_provider_token_load($tid) {
 function oauth_common_cron() {
   db_query("DELETE t, pt FROM {oauth_common_token} t LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
     WHERE t.expires != 0 AND t.expires <= %d", array(
-      ':now' => time(),
+    ':now' => time(),
   ));
 
   // Should 300 be overriden in DrupalOAuthServer and made configurable?
   db_query("DELETE FROM {oauth_common_nonce}
     WHERE `timestamp` < %d", array(
-      ':now' => time() - 300,
+    ':now' => time() - 300,
   ));
 }
 
@@ -224,13 +224,13 @@ function oauth_common_user($op, &$edit, &$account, $category = NULL) {
       LEFT JOIN {oauth_common_token} t ON t.csid = c.csid
       LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
       WHERE pc.uid = %d", array(
-        ':uid' => $account->uid,
-      ));
+      ':uid' => $account->uid,
+    ));
     db_query("DELETE t, pt FROM {oauth_common_token} t
       LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
       WHERE uid = %d", array(
-        ':uid' => $account->uid,
-      ));
+      ':uid' => $account->uid,
+    ));
   }
 }
 
@@ -400,9 +400,9 @@ function oauth_common_get_request_token($consumer_token, $request_endpoint = '/o
 function oauth_common_get_user_provider_tokens($uid) {
   $res = db_query("SELECT t.*, pt.created, pt.changed, pt.services, pt.authorized FROM {oauth_common_token} t
     INNER JOIN {oauth_common_provider_token} pt WHERE t.uid = %d AND t.type = %d", array(
-      ':uid'  => $uid,
-      ':type' => OAUTH_COMMON_TOKEN_TYPE_ACCESS,
-    ));
+    ':uid' => $uid,
+    ':type' => OAUTH_COMMON_TOKEN_TYPE_ACCESS,
+  ));
   $tokens = array();
   while ($token = DrupalOAuthToken::fromResult($res)) {
     $tokens[] = $token;

@@ -25,10 +25,10 @@ function _oauth_common_update_6201() {
   // and other configuration data.
   db_add_field($ret, 'oauth_common_consumer', 'configuration', array(
     'description' => t('Consumer configuration'),
-    'type'        => 'text',
-    'serialized'  => TRUE,
-    'size'        => 'big',
-    'not null'    => TRUE,
+    'type' => 'text',
+    'serialized' => TRUE,
+    'size' => 'big',
+    'not null' => TRUE,
     'object default' => array(),
   ));
 

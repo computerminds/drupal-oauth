@@ -55,9 +55,9 @@ class DrupalOAuthToken extends OAuthToken {
       $this->changed = time();
 
       $values = array(
-        'token_key'  => $this->key,
-        'changed'    => $this->changed,
-        'services'   => json_encode($this->services),
+        'token_key' => $this->key,
+        'changed' => $this->changed,
+        'services' => json_encode($this->services),
         'authorized' => $this->authorized,
       );
 
@@ -77,13 +77,13 @@ class DrupalOAuthToken extends OAuthToken {
     }
 
     $values = array(
-      'csid'      => $this->consumer->csid,
-      'key_hash'  => sha1($this->key),
+      'csid' => $this->consumer->csid,
+      'key_hash' => sha1($this->key),
       'token_key' => $this->key,
-      'secret'    => $this->secret,
-      'expires'   => $this->expires,
-      'type'      => $this->type,
-      'uid'       => $this->uid,
+      'secret' => $this->secret,
+      'expires' => $this->expires,
+      'type' => $this->type,
+      'uid' => $this->uid,
     );
 
     if ($update) {
@@ -97,7 +97,7 @@ class DrupalOAuthToken extends OAuthToken {
 
     if (!$update) {
       $values = array(
-        'tid'       => $this->tid,
+        'tid' => $this->tid,
         'token_key' => $this->key,
       );
       drupal_write_record('oauth_common_provider_token', $values, array('token_key'));
@@ -208,7 +208,7 @@ class DrupalOAuthToken extends OAuthToken {
     }
 
     return self::fromResult(db_query("SELECT " . $fields . " FROM {oauth_common_token} t " . $join . " WHERE t.tid = %d", array(
-      ':tid'  => $tid,
+      ':tid' => $tid,
     )));
   }
 

@@ -8,11 +8,26 @@
 
 function oauth_common_page_user_authorizations($account) {
   $header = array(
-    array('data' => t('Application'), 'class' => "oauth-common-authorization-application"),
-    array('data' => t('Key'),         'class' => "oauth-common-authorization-key"),
-    array('data' => t('Created'),     'class' => "oauth-common-authorization-created"),
-    array('data' => t('Expires'),     'class' => "oauth-common-authorization-expires"),
-    array('data' => t('Operations'),  'class' => "oauth-common-authorization-operations"),
+    array(
+      'data' => t('Application'),
+      'class' => "oauth-common-authorization-application",
+    ),
+    array(
+      'data' => t('Key'),
+      'class' => "oauth-common-authorization-key",
+    ),
+    array(
+      'data' => t('Created'),
+      'class' => "oauth-common-authorization-created",
+    ),
+    array(
+      'data' => t('Expires'),
+      'class' => "oauth-common-authorization-expires",
+    ),
+    array(
+      'data' => t('Operations'),
+      'class' => "oauth-common-authorization-operations",
+    ),
   );
 
   $access_tokens = oauth_common_get_user_provider_tokens($account->uid);
@@ -23,15 +38,15 @@ function oauth_common_page_user_authorizations($account) {
 
     $data = array(
       'application' => array(
-        'data'  => check_plain($consumer->name),
+        'data' => check_plain($consumer->name),
         'class' => "oauth-common-authorization-application",
       ),
       'key' => array(
-        'data'  => substr($token->key, 0, 6) . '...',
+        'data' => substr($token->key, 0, 6) . '...',
         'class' => "oauth-common-authorization-key",
       ),
       'created' => array(
-        'data'  => format_date($token->created),
+        'data' => format_date($token->created),
         'class' => "oauth-common-authorization-created",
       ),
     );
@@ -39,25 +54,25 @@ function oauth_common_page_user_authorizations($account) {
 
     $operations[] = array(
       'title' => t('Edit'),
-      'href'  => sprintf('user/%d/oauth/authorizations/%s', $account->uid, $token->key),
+      'href' => sprintf('user/%d/oauth/authorizations/%s', $account->uid, $token->key),
       'query' => array('destination' => $_GET['q']),
     );
 
     $operations[] = array(
       'title' => t('Delete'),
-      'href'  => sprintf('user/%d/oauth/authorizations/%s', $account->uid, $token->key) . '/delete',
+      'href' => sprintf('user/%d/oauth/authorizations/%s', $account->uid, $token->key) . '/delete',
       'query' => array('destination' => $_GET['q']),
     );
 
     $data['expires'] = array(
-      'data'  => $token->expires ? format_date($token->expires) : t('Never'),
+      'data' => $token->expires ? format_date($token->expires) : t('Never'),
       'class' => "oauth-common-authorization-expires",
     );
 
     $rows[] = array(
       'data' => $data + array(
         'operations' => array(
-          'data'  => theme('links', $operations),
+          'data' => theme('links', $operations),
           'class' => "oauth-common-authorization-operations",
         ),
       ),
@@ -137,7 +152,7 @@ function oauth_common_form_authorization($form_state, $token) {
     $form['secret'] = array(
       '#type' => 'item',
       '#title' => t('Secret'),
-      '#value' => $token->secret
+      '#value' => $token->secret,
     );
   }
 
@@ -190,7 +205,8 @@ function oauth_common_form_authorization_submit($form, $form_state) {
 
   drupal_set_message(t('The @consumer token @token was updated.', array(
     '@consumer' => $consumer->name,
-    '@token' => $token->key)));
+    '@token' => $token->key,
+  )));
   drupal_goto(sprintf('user/%d/applications', $form_state['values']['user']));
 }
 
@@ -251,5 +267,6 @@ function oauth_common_form_authorization_delete_submit($form, $form_state) {
   $token->delete();
   drupal_set_message(t('The @consumer token @token was deleted.', array(
     '@consumer' => $consumer->name,
-    '@token' => $token->key)));
+    '@token' => $token->key,
+  )));
 }

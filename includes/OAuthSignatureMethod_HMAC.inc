@@ -39,8 +39,8 @@ class OAuthSignatureMethod_HMAC extends OAuthSignatureMethod {
     if (empty($this->algo)) {
       throw new Exception(t('None of the suggested hash algorithms (@cand) were '
         . 'supported by the server. Try one of the following: !algos.', array(
-          '@cand' => join($algo, ', '),
-          '!algos' => join($algos, ', '),
+        '@cand' => join($algo, ', '),
+        '!algos' => join($algos, ', '),
       )));
     }
   }
@@ -55,7 +55,7 @@ class OAuthSignatureMethod_HMAC extends OAuthSignatureMethod {
 
     $key_parts = array(
       $consumer->secret,
-      ($token) ? $token->secret : ""
+      ($token) ? $token->secret : "",
     );
 
     $key_parts = OAuthUtil::urlencode_rfc3986($key_parts);

@@ -54,13 +54,13 @@ class DrupalOAuthConsumer extends OAuthConsumer {
       $this->changed = time();
 
       $values = array(
-        'consumer_key'  => $this->key,
-        'created'       => $this->created,
-        'changed'       => $this->changed,
-        'uid'           => $this->uid,
-        'name'          => $this->name,
-        'context'       => $this->context,
-        'callback_url'  => $this->callback_url,
+        'consumer_key' => $this->key,
+        'created' => $this->created,
+        'changed' => $this->changed,
+        'uid' => $this->uid,
+        'name' => $this->name,
+        'context' => $this->context,
+        'callback_url' => $this->callback_url,
       );
 
       if ($update) {
@@ -79,9 +79,9 @@ class DrupalOAuthConsumer extends OAuthConsumer {
     }
 
     $values = array(
-      'key_hash'      => sha1($this->key),
-      'consumer_key'  => $this->key,
-      'secret'        => $this->secret,
+      'key_hash' => sha1($this->key),
+      'consumer_key' => $this->key,
+      'secret' => $this->secret,
       'configuration' => serialize(empty($this->configuration) ? array() : $this->configuration),
     );
 

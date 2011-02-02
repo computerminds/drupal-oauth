@@ -15,24 +15,24 @@ function _oauth_common_update_6100() {
   db_drop_field($ret, 'oauth_common_consumer_token', 'type');
   db_add_field($ret, 'oauth_common_consumer_token', 'provider_url', array(
     'description' => t('The url to the provider.'),
-    'type'        => 'varchar',
-    'length'      => 255,
-    'not null'    => TRUE,
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => TRUE,
   ));
   db_add_field($ret, 'oauth_common_consumer_token', 'access_endpoint', array(
     'description' => t('The endpoint to fetch the access token.'),
-    'type'        => 'varchar',
-    'length'      => 255,
-    'not null'    => TRUE,
-    'default'     => '',
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => TRUE,
+    'default' => '',
   ));
 
   db_add_field($ret, 'oauth_authorization_levels', 'context', array(
     'description' => t('The context for the authorization level.'),
-    'type'        => 'varchar',
-    'length'      => 32,
-    'not null'    => TRUE,
-    'default'     => 'default',
+    'type' => 'varchar',
+    'length' => 32,
+    'not null' => TRUE,
+    'default' => 'default',
   ));
 
   db_add_field($ret, 'oauth_authorization_levels', 'weight', array(
@@ -56,10 +56,10 @@ function _oauth_common_update_6100() {
 
   db_add_field($ret, 'oauth_common_consumer', 'context', array(
     'description' => t('The application context.'),
-    'type'        => 'varchar',
-    'length'      => 32,
-    'not null'    => TRUE,
-    'default'     => 'default',
+    'type' => 'varchar',
+    'length' => 32,
+    'not null' => TRUE,
+    'default' => 'default',
   ));
 
   return $ret;

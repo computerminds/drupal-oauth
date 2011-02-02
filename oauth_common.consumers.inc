@@ -11,25 +11,37 @@ function oauth_common_page_user_consumers($account) {
 
   $ci = oauth_common_user_consumers($account->uid);
   $header = array(
-    array('data' => t('Name'),       'class' => 'oauth-common-consumer-name'),
-    array('data' => t('Key'),        'class' => 'oauth-common-consumer-key'),
-    array('data' => t('Created'),    'class' => 'oauth-common-consumer-created'),
-    array('data' => t('Operations'), 'class' => 'oauth-common-consumer-operations'),
+    array(
+      'data' => t('Name'),
+      'class' => 'oauth-common-consumer-name',
+    ),
+    array(
+      'data' => t('Key'),
+      'class' => 'oauth-common-consumer-key',
+    ),
+    array(
+      'data' => t('Created'),
+      'class' => 'oauth-common-consumer-created',
+    ),
+    array(
+      'data' => t('Operations'),
+      'class' => 'oauth-common-consumer-operations',
+    ),
   );
   $rows = array();
 
   foreach ($ci as $consumer) {
     $data = array(
       'name' => array(
-        'data'  => $consumer->name,
+        'data' => $consumer->name,
         'class' => 'oauth-common-consumer-name',
       ),
       'key' => array(
-        'data'  => substr($consumer->key, 0, 6) . '...',
+        'data' => substr($consumer->key, 0, 6) . '...',
         'class' => 'oauth-common-consumer-key',
       ),
       'created' => array(
-        'data'  => format_date($consumer->created),
+        'data' => format_date($consumer->created),
         'class' => 'oauth-common-consumer-created',
       ),
     );
@@ -38,18 +50,18 @@ function oauth_common_page_user_consumers($account) {
     if (oauth_common_can_edit_consumer($consumer)) {
       $operations[] = array(
         'title' => t('Edit'),
-        'href'  => sprintf('user/%d/oauth/consumer/%s', $account->uid, $consumer->csid),
+        'href' => sprintf('user/%d/oauth/consumer/%s', $account->uid, $consumer->csid),
       );
       $operations[] = array(
         'title' => t('Delete'),
-        'href'  => sprintf('user/%d/oauth/consumer/%s', $account->uid, $consumer->csid) . '/delete',
+        'href' => sprintf('user/%d/oauth/consumer/%s', $account->uid, $consumer->csid) . '/delete',
       );
     }
 
     $rows[] = array(
       'data' => $data + array(
         'operations' => array(
-          'data'  => theme('links', $operations),
+          'data' => theme('links', $operations),
           'class' => 'oauth-common-consumer-operations',
         ),
       ),

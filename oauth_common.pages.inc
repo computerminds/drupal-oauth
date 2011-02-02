@@ -136,7 +136,7 @@ function oauth_common_form_authorize() {
     $form = array();
 
     $form['token'] = array(
-      '#type'  => 'value',
+      '#type' => 'value',
       '#value' => $token,
     );
 
@@ -193,8 +193,8 @@ function oauth_common_form_authorize() {
     $deny_title = !empty($context->authorization_options['deny_access_title']) ? $context->authorization_options['deny_access_title'] :
       'Deny access';
     $form['deny'] = array(
-      '#type'   => 'item',
-      '#value'  => l(t($deny_title), 'oauth/authorization/deny/' . $token->key),
+      '#type' => 'item',
+      '#value' => l(t($deny_title), 'oauth/authorization/deny/' . $token->key),
       '#attributes' => array(
         'class' => 'deny-access',
       ),
@@ -203,8 +203,8 @@ function oauth_common_form_authorize() {
     $grant_title = !empty($context->authorization_options['grant_access_title']) ? $context->authorization_options['grant_access_title'] :
       'Grant access';
     $form['confirm'] = array(
-      '#type'   => 'submit',
-      '#value'  => t($grant_title),
+      '#type' => 'submit',
+      '#value' => t($grant_title),
     );
 
     return $form;
