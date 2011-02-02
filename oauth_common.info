@@ -3,7 +3,6 @@ name = OAuth
 description = Provides OAuth functionality
 package = "OAuth"
 
-dependencies[] = autoload
 recommends[] = ctools
 suggests[] = inputstream
 
