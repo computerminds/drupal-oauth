@@ -23,8 +23,8 @@ function _oauth_common_validate_request_callback($type, $unsigned = NULL) {
     }
   }
   catch (OAuthException $e) {
-    drupal_set_header('HTTP/1.0 401 Unauthorized: ' . $e->getMessage());
-    drupal_set_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute' => TRUE))));
+    drupal_add_http_header('HTTP/1.0 401 Unauthorized', $e->getMessage());
+    drupal_add_http_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute' => TRUE))));
   }
   exit;
 }
@@ -68,7 +68,7 @@ function oauth_common_page_authorized($csid = NULL) {
 /**
  * Form for granting access to the consumer
  */
-function oauth_common_form_authorize() {
+function oauth_common_form_authorize($form, &$form_state) {
   module_load_include('inc', 'oauth_common');
   $req = DrupalOAuthRequest::from_request();
   $context = oauth_common_context_from_request($req);
@@ -212,11 +212,19 @@ function oauth_common_form_authorize() {
   else {
     $query = $_GET;
     unset($query['q']); // why are there so few q's?
+    /**
+     * TODO 
+     * array(
+     *   'destination' => url('oauth/authorize', array( 'query' => $query, )),
+     * ) 
+     * needs to be an array of keys and values instead of a string.
+     */
     drupal_goto('user/login', array(
-      'destination' => url('oauth/authorize', array(
-        'query' => $query,
-      )),
-    ));
+        'query' => array(
+          'destination' => url('oauth/authorize', array(
+                           'query' => $query,
+                         )),
+        )));
   }
 }
 
@@ -333,8 +341,8 @@ function oauth_common_callback_request_token() {
     print $server->fetch_request_token($req);
   }
   catch (OAuthException $e) {
-    drupal_set_header('HTTP/1.0 401 Unauthorized: ' . $e->getMessage());
-    drupal_set_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute' => TRUE))));
+    drupal_add_http_header('HTTP/1.0 401 Unauthorized', $e->getMessage());
+    drupal_add_http_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute' => TRUE))));
   }
 }
 
@@ -352,7 +360,7 @@ function oauth_common_callback_access_token() {
     $access_token = $server->fetch_access_token($req);
 
     // Set the expiry time based on context settings or get parameter
-    $expires = !empty($context->authorization_options['access_token_lifetime']) ? time() + $context->authorization_options['access_token_lifetime'] : 0;
+    $expires = !empty($context->authorization_options['access_token_lifetime']) ? REQUEST_TIME + $context->authorization_options['access_token_lifetime'] : 0;
     if ($_GET['expires'] && intval($_GET['expires'])) {
       $hint = intval($_GET['expires']);
       // Only accept more restrictive expiry times
@@ -370,7 +378,7 @@ function oauth_common_callback_access_token() {
     print $access_token;
   }
   catch (OAuthException $e) {
-    drupal_set_header('HTTP/1.0 401 Unauthorized: ' . $e->getMessage());
-    drupal_set_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute' => TRUE))));
+    drupal_add_http_header('HTTP/1.0 401 Unauthorized', $e->getMessage());
+    drupal_add_http_header(sprintf('WWW-Authenticate: OAuth realm="%s"', url('', array('absolute' => TRUE))));
   }
 }

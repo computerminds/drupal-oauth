@@ -12,18 +12,18 @@ function _oauth_common_update_6201() {
 
   if (!class_exists('DrupalOAuthConsumer')) {
     $path = drupal_get_path('module', 'oauth_common');
-    require_once($path . '/lib/OAuth.php');
-    require_once($path . '/includes/DrupalOAuthConsumer.inc');
+    require_once DRUPAL_ROOT . '/' . $path . '/lib/OAuth.php';
+    require_once DRUPAL_ROOT . '/' . $path . '/includes/DrupalOAuthConsumer.inc';
   }
 
   // Change the oauth_common_consumer primary key to include the
   // provider_consumer field.
-  db_drop_primary_key($ret, 'oauth_common_consumer');
-  db_add_primary_key($ret, 'oauth_common_consumer', array('consumer_key', 'provider_consumer'));
+  db_drop_primary_key('oauth_common_consumer');
+  db_add_primary_key('oauth_common_consumer', array('consumer_key', 'provider_consumer'));
 
   // The configuration field will be used to store provider_url, access_endpoint
   // and other configuration data.
-  db_add_field($ret, 'oauth_common_consumer', 'configuration', array(
+  db_add_field('oauth_common_consumer', 'configuration', array(
     'description' => t('Consumer configuration'),
     'type' => 'text',
     'serialized' => TRUE,
@@ -32,8 +32,8 @@ function _oauth_common_update_6201() {
     'object default' => array(),
   ));
 
-  // The consumer type was never used, now it's story ends.
-  db_drop_field($ret, 'oauth_common_consumer', 'type');
+  // The consumer type was never used, now its story ends.
+  db_drop_field('oauth_common_consumer', 'type');
 
   // Transfer all DrupalOAuthConsumerTokens to DrupalOAuthConsumer
   $res = db_query('SELECT * FROM {oauth_common_consumer_token}');
@@ -49,7 +49,7 @@ function _oauth_common_update_6201() {
     $consumer->write();
   }
 
-  db_drop_table($ret, 'oauth_common_consumer_token');
+  db_drop_table('oauth_common_consumer_token');
 
   return $ret;
 }

@@ -51,7 +51,7 @@ class DrupalOAuthConsumer extends OAuthConsumer {
     $primary = $update ? array('csid') : array();
 
     if ($this->provider_consumer) {
-      $this->changed = time();
+      $this->changed = REQUEST_TIME;
 
       $values = array(
         'consumer_key' => $this->key,
@@ -67,7 +67,7 @@ class DrupalOAuthConsumer extends OAuthConsumer {
         $values['csid'] = $this->csid;
       }
       else {
-        $this->created = time();
+        $this->created = REQUEST_TIME;
         $values['created'] = $this->created;
       }
 
@@ -120,13 +120,15 @@ class DrupalOAuthConsumer extends OAuthConsumer {
    * @return void
    */
   public static function deleteConsumer($csid) {
+    // TODO Please convert this statement to the D7 database API syntax.
     db_query("DELETE c, pc, t, pt FROM {oauth_common_consumer} c
-      LEFT JOIN {oauth_common_provider_consumer} pc ON pc.csid = c.csid
-      LEFT JOIN {oauth_common_token} t ON t.csid = c.csid
-      LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
-      WHERE c.csid = %d", array(
-      ':csid' => $csid,
-    ));
+     LEFT JOIN {oauth_common_provider_consumer} pc ON pc.csid = c.csid
+     LEFT JOIN {oauth_common_token} t ON t.csid = c.csid
+     LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
+     WHERE c.csid = :csid", 
+      array(
+        ':csid' => $csid,
+      ));
   }
 
   /**
@@ -163,9 +165,11 @@ class DrupalOAuthConsumer extends OAuthConsumer {
       $join = 'LEFT JOIN {oauth_common_provider_consumer} pc ON pc.csid = c.csid';
     }
 
-    return self::fromResult(db_query("SELECT " . $fields . " FROM {oauth_common_consumer} c " . $join . " WHERE c.csid = %d", array(
-      ':csid' => $csid,
-    )));
+    // TODO Please convert this statement to the D7 database API syntax.
+    return self::fromResult(db_query("SELECT " . $fields . " FROM {oauth_common_consumer} c " . $join . " WHERE c.csid = :csid", 
+        array(
+          ':csid' => $csid,
+        )));
   }
 
   /**
@@ -186,7 +190,8 @@ class DrupalOAuthConsumer extends OAuthConsumer {
     // For backwards compatibility with deprecated DrupalOAuthConsumer::load() from 6.x-3.0-beta3
     $fields = $provider ? 'pc.*, c.secret, c.configuration' : 'c.csid, c.consumer_key, c.secret, c.configuration, pc.created, pc.changed, pc.uid, pc.name, pc.context, pc.callback_url';
 
-    $query = "SELECT " . $fields . " FROM {oauth_common_consumer} c " . $join . " JOIN {oauth_common_provider_consumer} pc ON pc.csid = c.csid WHERE c.key_hash = '%s'" . $where;
+    $query = "SELECT " . $fields . " FROM {oauth_common_consumer} c " . $join . " JOIN {oauth_common_provider_consumer} pc ON pc.csid = c.csid WHERE c.key_hash = :key_hash" . $where;
+    // TODO Please convert this statement to the D7 database API syntax.
     return self::fromResult(db_query($query, array(
       ':key_hash' => sha1($key),
     )));

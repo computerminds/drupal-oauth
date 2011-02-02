@@ -10,7 +10,7 @@ function _oauth_common_update_6200() {
 
   $contexts = array();
 
-  db_create_table($ret, 'oauth_common_context', _oauth_common_oauth_common_context_6200());
+  db_create_table('oauth_common_context', _oauth_common_oauth_common_context_6200());
 
   // Fetch the authorization levels and create contexts from them
   $res = db_query("SELECT * FROM {oauth_authorization_levels}");
@@ -31,15 +31,15 @@ function _oauth_common_update_6200() {
 
   // Change all the oauth_common_token indexes and keys to take provider_token
   // into account.
-  db_drop_primary_key(&$ret, 'oauth_common_token');
-  db_drop_index(&$ret, 'oauth_common_token', 'token_key_type');
-  db_drop_index(&$ret, 'oauth_common_token', 'consumer_key');
+  db_drop_primary_key('oauth_common_token');
+  db_drop_index('oauth_common_token', 'token_key_type');
+  db_drop_index('oauth_common_token', 'consumer_key');
 
-  db_add_primary_key(&$ret, 'oauth_common_token', array('token_key', 'provider_token'));
-  db_add_index(&$ret, 'oauth_common_token', 'token_key_type', array('token_key', 'provider_token', 'type'));
-  db_add_index(&$ret, 'oauth_common_token', 'consumer_key', array('consumer_key', 'provider_token'));
+  db_add_primary_key('oauth_common_token', array('token_key', 'provider_token'));
+  db_add_index('oauth_common_token', 'token_key_type', array('token_key', 'provider_token', 'type'));
+  db_add_index('oauth_common_token', 'consumer_key', array('consumer_key', 'provider_token'));
 
-  db_drop_table($ret, 'oauth_authorization_levels');
+  db_drop_table('oauth_authorization_levels');
 
   return $ret;
 }

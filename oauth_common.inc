@@ -10,10 +10,14 @@
  *  An array of consumer info
  */
 function oauth_common_user_consumers($uid) {
+  // TODO Please convert this statement to the D7 database API syntax.
   $result = db_query($query = 'SELECT c.secret, c.configuration, pc.*
     FROM {oauth_common_consumer} c
     INNER JOIN {oauth_common_provider_consumer} pc ON pc.csid = c.csid
-    WHERE pc.uid = %d' . $where, array(':uid' => $uid));
+    WHERE pc.uid = :uid' . $where, 
+            array(
+              ':uid' => $uid
+            ));
 
   $consumers = array();
   while ($consumer = DrupalOAuthConsumer::fromResult($result)) {
@@ -32,10 +36,11 @@ function oauth_common_user_consumers($uid) {
  *  An array of consumer info
  */
 function oauth_common_user_access_tokens($uid) {
-  $result = db_query("SELECT * FROM {oauth_common_token} WHERE uid = %d AND type = '%d'", array(
-    ':uid' => $uid,
-    ':type' => OAUTH_COMMON_TOKEN_TYPE_ACCESS,
-  ));
+  $result = db_query("SELECT * FROM {oauth_common_token} WHERE uid = :uid AND type = :type", 
+            array(
+                ':uid' => $uid,
+                ':type' => OAUTH_COMMON_TOKEN_TYPE_ACCESS,
+            ));
   $tokens = array();
   while ($token = DrupalOAuthToken::fromResult($result)) {
     $tokens[] = $token;
@@ -102,7 +107,7 @@ function oauth_common_ahah_secret($object) {
   $secret = form_builder('oauth_common_ahah_secret', $secret, $form_state);
   $output = drupal_render($secret);
 
-  print drupal_to_js(array(
+  print drupal_json_encode(array(
     'status' => TRUE,
     'data' => $output,
   ));

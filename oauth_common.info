@@ -7,7 +7,7 @@ dependencies[] = autoload
 recommends[] = ctools
 suggests[] = inputstream
 
-core = 6.x
+core = 7.x
 php = 5.2
 
 files[] = lib/OAuth.php
@@ -18,3 +18,5 @@ files[] = includes/DrupalOAuthToken.inc
 files[] = includes/DrupalOAuthConsumer.inc
 files[] = includes/DrupalOAuthClient.inc
 files[] = includes/OAuthSignatureMethod_HMAC.inc
+
+configure = admin/config/oauth

@@ -8,10 +8,10 @@
 function _oauth_common_update_6001() {
   $ret = array();
   if (db_table_exists('services_oauth_authorization_levels')) {
-    $ret[] = update_sql("ALTER TABLE {services_oauth_authorization_levels} RENAME TO {oauth_authorization_levels}");
+    db_query("ALTER TABLE {services_oauth_authorization_levels} RENAME TO {oauth_authorization_levels}") ;
   }
   else {
-    db_create_table($ret, 'oauth_authorization_levels', _oauth_common_oauth_authorization_levels_6001());
+    db_create_table('oauth_authorization_levels', _oauth_common_oauth_authorization_levels_6001());
   }
   return $ret;
 }

@@ -4,5 +4,30 @@ package = "OAuth"
 
 dependencies[] = oauth_common
 
-core = 6.x
+core = 7.x
 php = 5.2
+
+files[] = oauth_common.admin.inc
+files[] = oauth_common.authorizations.inc
+files[] = oauth_common.consumers.inc
+files[] = oauth_common.inc
+files[] = oauth_common.install
+files[] = oauth_common.module
+files[] = oauth_common.pages.inc
+files[] = oauth_common_providerui.module
+files[] = includes/DrupalOAuthClient.inc
+files[] = includes/DrupalOAuthConsumer.inc
+files[] = includes/DrupalOAuthDataStore.inc
+files[] = includes/DrupalOAuthRequest.inc
+files[] = includes/DrupalOAuthServer.inc
+files[] = includes/DrupalOAuthToken.inc
+files[] = includes/OAuthSignatureMethod_HMAC.inc
+files[] = lib/OAuth.php
+files[] = updates/update.6001.inc
+files[] = updates/update.6002.inc
+files[] = updates/update.6003.inc
+files[] = updates/update.6100.inc
+files[] = updates/update.6200.inc
+files[] = updates/update.6201.inc
+files[] = updates/update.6202.inc
+files[] = updates/update.6300.inc

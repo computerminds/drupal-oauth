@@ -10,13 +10,13 @@ define('OAUTH_COMMON_VERSION_1', 1); // The original 1.0 spec
 define('OAUTH_COMMON_VERSION_1_RFC', 2); // The RFC 5849 1.0 spec
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function oauth_common_theme() {
   return array(
     'oauth_common_auth_level' => array(
       'template' => 'oauth_common_auth_level',
-      'arguments' => array(
+      'variables' => array(
         'element' => array(),
         'value' => NULL,
       ),
@@ -25,28 +25,48 @@ function oauth_common_theme() {
 }
 
 /**
- * Implementation of hook_perm().
+ * Implements hook_permission().
  */
-function oauth_common_perm() {
+function oauth_common_permission() {
   $permissions = array(
-    'oauth authorize any consumers',
-    'oauth register any consumers',
-    'administer oauth',
-    'administer consumers',
+    'oauth authorize any consumers' => array(
+      'title' => t('OAuth: Authorize any consumers'),
+      'description' => t('OAuth: Authorize any consumers.'),
+    ),
+    'oauth register any consumers' => array(
+      'title' => t('OAuth: Register any consumers'),
+      'description' => t('OAuth: Register any consumers.'),
+    ),
+    'administer oauth' => array(
+      'title' => t('administer oauth'),
+      'description' => t('OAuth: Administer OAuth.'),
+    ),
+    'administer consumers' => array(
+      'title' => t('administer consumers'),
+      'description' => t('OAuth: Administer consumers.'),
+    ),
   );
 
   // Add seperate permissions for creating and
   // authorizing consumers in each context.
   foreach (oauth_common_context_list() as $name => $title) {
-    $permissions[] = sprintf('oauth register consumers in %s', $name);
-    $permissions[] = sprintf('oauth authorize consumers in %s', $name);
+    $perm_reg = sprintf('oauth register consumers in %s', $name);
+    $perm_auth = sprintf('oauth authorize consumers in %s', $name);
+    $permissions[$perm_reg] = array(
+      'title' => $perm_reg,
+      'description' => $perm_reg,
+    );
+    $permissions[$perm_auth] = array(
+      'title' => $perm_auth,
+      'description' => $perm_auth,
+    );
   }
 
   return $permissions;
 }
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function oauth_common_menu() {
   $menu = array();
@@ -56,7 +76,7 @@ function oauth_common_menu() {
     'file' => 'oauth_common.admin.inc',
   );
 
-  $menu['admin/settings/oauth'] = array(
+  $menu['admin/config/oauth'] = array(
     'title' => 'OAuth',
     'description' => 'Settings for OAuth',
     'page callback' => 'drupal_get_form',
@@ -64,7 +84,7 @@ function oauth_common_menu() {
     'type' => MENU_NORMAL_ITEM,
   ) + $admin_base;
 
-  $menu['admin/settings/oauth/settings'] = array(
+  $menu['admin/config/oauth/settings'] = array(
     'title' => 'Settings',
     'description' => 'Settings for OAuth',
     'page callback' => 'drupal_get_form',
@@ -159,23 +179,33 @@ function oauth_common_provider_token_load($tid) {
 }
 
 /**
- * Implementation of hook_cron().
+ * Implements hook_cron().
  */
 function oauth_common_cron() {
+  // TODO Please convert this statement to the D7 database API syntax.
   db_query("DELETE t, pt FROM {oauth_common_token} t LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
-    WHERE t.expires != 0 AND t.expires <= %d", array(
-    ':now' => time(),
-  ));
+   WHERE t.expires != 0 AND t.expires <= :now", 
+    array(
+      ':now' => REQUEST_TIME,
+    )) ;
 
   // Should 300 be overriden in DrupalOAuthServer and made configurable?
+  // TODO Please review the conversion of this statement to the D7 database API syntax.
   db_query("DELETE FROM {oauth_common_nonce}
-    WHERE `timestamp` < %d", array(
-    ':now' => time() - 300,
-  ));
+   WHERE `timestamp` < :now", 
+    array(
+      ':now' => REQUEST_TIME - 300,
+    )) ;
+  db_delete('oauth_common_nonce')
+  ->condition('`timestamp`', 
+    array(
+      ':now' => REQUEST_TIME - 300,
+    ), '<')
+    ->execute();
 }
 
 /**
- * Implementation of hook_oauth_default_contexts().
+ * Implements hook_oauth_default_contexts().
  */
 function oauth_common_default_oauth_common_context() {
   $contexts = array();
@@ -213,29 +243,34 @@ function oauth_common_default_oauth_common_context() {
 }
 
 /**
- * Implementation of hook_user().
+ * Implements hook_user_cancel().
  */
-function oauth_common_user($op, &$edit, &$account, $category = NULL) {
-  if ($op == 'delete') {
+function oauth_common_user_cancel($edit, $account, $method) {
+  if (TRUE) {
     // Delete all tokens and consumers related to a user
     module_load_include('inc', 'oauth_common');
+    // TODO Please convert this statement to the D7 database API syntax.
     db_query("DELETE c, pc, t, pt FROM {oauth_common_consumer} c
-      INNER JOIN {oauth_common_provider_consumer} pc ON pc.csid = c.csid
-      LEFT JOIN {oauth_common_token} t ON t.csid = c.csid
-      LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
-      WHERE pc.uid = %d", array(
-      ':uid' => $account->uid,
-    ));
+     INNER JOIN {oauth_common_provider_consumer} pc ON pc.csid = c.csid
+     LEFT JOIN {oauth_common_token} t ON t.csid = c.csid
+     LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
+     WHERE pc.uid = :uid", 
+      array(
+        ':uid' => $account->uid,
+      )) ;
+    // TODO Please convert this statement to the D7 database API syntax.
     db_query("DELETE t, pt FROM {oauth_common_token} t
-      LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
-      WHERE uid = %d", array(
-      ':uid' => $account->uid,
-    ));
+     LEFT JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid
+     WHERE uid = :uid", array(
+       ':uid' => $account->uid,
+     )) ;
   }
 }
 
 /**
  * Implementation of hook_xrds().
+ *
+ * @TODO Is this function correctly named?
  */
 function services_oauth_xrds() {
   $xrds = array();
@@ -317,7 +352,7 @@ function oauth_common_can_edit_consumer($consumer) {
 }
 
 /**
- * Deterines if a user has the necessary permissions to create consumers.
+ * Determines if a user has the necessary permissions to create consumers.
  *
  * @param object $account
  *  The user account to check permissions for. Defaults to the currently
@@ -399,10 +434,11 @@ function oauth_common_get_request_token($consumer_token, $request_endpoint = '/o
  */
 function oauth_common_get_user_provider_tokens($uid) {
   $res = db_query("SELECT t.*, pt.created, pt.changed, pt.services, pt.authorized FROM {oauth_common_token} t
-    INNER JOIN {oauth_common_provider_token} pt WHERE t.uid = %d AND t.type = %d", array(
-    ':uid' => $uid,
-    ':type' => OAUTH_COMMON_TOKEN_TYPE_ACCESS,
-  ));
+    INNER JOIN {oauth_common_provider_token} pt WHERE t.uid = :uid AND t.type = :type",
+         array(
+           ':uid' => $uid,
+           ':type' => OAUTH_COMMON_TOKEN_TYPE_ACCESS,
+         ));
   $tokens = array();
   while ($token = DrupalOAuthToken::fromResult($res)) {
     $tokens[] = $token;
@@ -506,11 +542,16 @@ function oauth_common_context_save($context) {
  * @return void
  */
 function oauth_common_context_delete($context) {
-  db_query("DELETE FROM {oauth_common_context} WHERE name = '%s' AND cid = %d", $context->name, $context->cid);
+  // TODO Please review the conversion of this statement to the D7 database API syntax.
+  db_query("DELETE FROM {oauth_common_context} WHERE name = :name AND cid = :cid", array(':name' => $context->name, ':cid' => $context->cid));
+  db_delete('oauth_common_context')
+    ->condition('name', $context->name)
+    ->condition('cid', $context->cid)
+    ->execute();
 }
 
 /**
- * Export an context.
+ * Export a context.
  *
  * @return string
  */
@@ -547,7 +588,7 @@ function oauth_common_context_list() {
 function _oauth_common_version() {
   static $version;
   if (!isset($version)) {
-    $info = db_result(db_query("SELECT info FROM {system} WHERE name = 'oauth_common'"));
+    $info = db_query("SELECT info FROM {system} WHERE name = :name", array(':name' => 'oauth_common'))->fetchField();
     $info = $info ? unserialize($info) : FALSE;
     if (!$info || empty($info['version'])) {
       $version = OAUTH_COMMON_CODE_BRANCH;

@@ -7,21 +7,7 @@
  */
 
 /**
- * Implementation of hook_install().
- */
-function oauth_common_install() {
-  drupal_install_schema('oauth_common');
-}
-
-/**
- * Implementation of hook_uninstall().
- */
-function oauth_common_uninstall() {
-  drupal_uninstall_schema('oauth_common');
-}
-
-/**
- * Implementation of hook_schema().
+ * Implements hook_schema().
  */
 function oauth_common_schema() {
   $schema = array();
@@ -119,7 +105,8 @@ function oauth_common_schema() {
 }
 
 /**
- * Contains the consumer schema - used by oauth_common_schema() as well as latest related update function
+ * Contains the consumer schema - used by oauth_common_schema() as
+ * well as latest related update function
  */
 function _oauth_common_consumer_schema() {
   return array(
@@ -164,7 +151,8 @@ function _oauth_common_consumer_schema() {
 }
 
 /**
- * Contains the provider consumer schema - used by oauth_common_schema() as well as latest related update function
+ * Contains the provider consumer schema - used by
+ * oauth_common_schema() as well as latest related update function
  */
 function _oauth_common_provider_consumer_schema() {
   return array(
@@ -232,7 +220,8 @@ function _oauth_common_provider_consumer_schema() {
 }
 
 /**
- * Contains the token schema - used by oauth_common_schema() as well as latest related update function
+ * Contains the token schema - used by oauth_common_schema() as well
+ * as latest related update function
  */
 function _oauth_common_token_schema() {
   return array(
@@ -296,7 +285,8 @@ function _oauth_common_token_schema() {
 }
 
 /**
- * Contains the provider token schema - used by oauth_common_schema() as well as latest related update function
+ * Contains the provider token schema - used by oauth_common_schema()
+ * as well as latest related update function
  */
 function _oauth_common_provider_token_schema() {
   return array(
@@ -332,7 +322,7 @@ function _oauth_common_provider_token_schema() {
         'type' => 'text',
       ),
       'authorized' => array(
-        'description' => 'In case its a request token, it checks if the user already authorized the consumer to get an access token.',
+        'description' => 'In case it\'s a request token, it checks if the user already authorized the consumer to get an access token.',
         'type' => 'int',
         'size' => 'tiny',
         'not null' => TRUE,
@@ -347,28 +337,35 @@ function _oauth_common_provider_token_schema() {
 }
 
 /**
- * Implementation of hook_update_N().
+ * Implements hook_update_N().
  *
- * This update either creates a authorization levels table, or transfers the
- * authorization levels table from the services_oauth module.
+ * This update either creates a authorization levels table, or
+ * transfers the authorization levels table from the services_oauth
+ * module.
  */
 function oauth_common_update_6001() {
   module_load_include('6001.inc', 'oauth_common', 'updates/update');
-  return _oauth_common_update_6001();
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  _oauth_common_update_6001();
 }
 
 /**
- * Implementation of hook_update_N().
+ * Implements hook_update_N().
  *
  * This update adds a expiry time column to the tokens table.
  */
 function oauth_common_update_6002() {
   module_load_include('6002.inc', 'oauth_common', 'updates/update');
-  return _oauth_common_update_6002();
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  _oauth_common_update_6002();
 }
 
 /**
- * Implementation of hook_update_N().
+ * Implements hook_update_N().
  *
  * This update makes it possible for consumers to store tokens in the common
  * token table. It also adds the possibility to add consumer-consumers to the
@@ -380,11 +377,14 @@ function oauth_common_update_6002() {
  */
 function oauth_common_update_6003() {
   module_load_include('6003.inc', 'oauth_common', 'updates/update');
-  return _oauth_common_update_6003();
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  _oauth_common_update_6003();
 }
 
 /**
- * Implementation of hook_update_N().
+ * Implements hook_update_N().
  *
  * This update adds the concept of contexts for consumers and authorization levels.
  * Also adding a couple of indexes that make sense when oauth_common is
@@ -392,46 +392,61 @@ function oauth_common_update_6003() {
  */
 function oauth_common_update_6100() {
   module_load_include('6100.inc', 'oauth_common', 'updates/update');
-  return _oauth_common_update_6100();
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  _oauth_common_update_6100();
 }
 
 /**
- * Implementation of hook_update_N().
+ * Implements hook_update_N().
  *
  * This update turns the contexts into ctools-manageable entities and migrates
  * the authorization levels into the new contexts table.
  */
 function oauth_common_update_6200() {
   module_load_include('6200.inc', 'oauth_common', 'updates/update');
-  return _oauth_common_update_6200();
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  _oauth_common_update_6200();
 }
 
 /**
- * Implementation of hook_update_N().
+ * Implements hook_update_N().
  *
  * This update unifies the handling of provider and consumer consumer entries.
  */
 function oauth_common_update_6201() {
   module_load_include('6201.inc', 'oauth_common', 'updates/update');
-  return _oauth_common_update_6201();
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  _oauth_common_update_6201();
 }
 
 /**
- * Implementation of hook_update_N().
+ * Implements hook_update_N().
  *
  * This update allows for longer consumer secrets.
  */
 function oauth_common_update_6202() {
   module_load_include('6202.inc', 'oauth_common', 'updates/update');
-  return _oauth_common_update_6202();
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  _oauth_common_update_6202();
 }
 
 /**
- * Implementation of hook_update_N().
+ * Implements hook_update_N().
  *
  * This update massively refactors the database.
  */
 function oauth_common_update_6300() {
   module_load_include('6300.inc', 'oauth_common', 'updates/update');
-  return _oauth_common_update_6300();
+  // hook_update_N() no longer returns a $ret array. Instead, return
+  // nothing or a translated string indicating the update ran successfully.
+  // See http://drupal.org/node/224333#update_sql.
+  _oauth_common_update_6300();
 }

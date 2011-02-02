@@ -52,7 +52,7 @@ class DrupalOAuthToken extends OAuthToken {
     $primary = $update ? array('tid') : array();
 
     if ($this->consumer->provider_consumer) {
-      $this->changed = time();
+      $this->changed = REQUEST_TIME;
 
       $values = array(
         'token_key' => $this->key,
@@ -65,7 +65,7 @@ class DrupalOAuthToken extends OAuthToken {
         $values['tid'] = $this->tid;
       }
       else {
-        $this->created = time();
+        $this->created = REQUEST_TIME;
         $values['created'] = $this->created;
       }
 
@@ -123,11 +123,13 @@ class DrupalOAuthToken extends OAuthToken {
    * @return void
    */
   public static function deleteToken($key, $consumer) {
+    // TODO Please convert this statement to the D7 database API syntax.
     db_query("DELETE t, pt FROM {oauth_common_token} t LEFT JOIN {oauth_common_provider_token} pt ON t.tid = pt.tid
-      WHERE t.key_hash = '%s' AND t.csid = %d", array(
-      ':key_hash' => sha1($key),
-      ':consumer' => $consumer->csid,
-    ));
+     WHERE t.key_hash = :key_hash AND t.csid = :consumer", 
+      array(
+        ':key_hash' => sha1($key),
+        ':consumer' => $consumer->csid,
+      )) ;
   }
 
   /**
@@ -159,14 +161,14 @@ class DrupalOAuthToken extends OAuthToken {
   public static function loadByKey($key, $consumer = FALSE, $type = OAUTH_COMMON_TOKEN_TYPE_ACCESS) {
     $fields = 't.*';
     $join   = '';
-    $where  = "t.key_hash = '%s'";
+    $where  = "t.key_hash = :key_hash";
     $values = array(
       ':key_hash' => sha1($key),
     );
 
     // Only add if defined - needed for backwards compatibility with deprecated DrupalOAuthToken::load() from 6.x-3.0-beta3
     if ($type !== FALSE) {
-      $where .= ' AND t.type = %d';
+      $where .= ' AND t.type = :type';
       $values[':type'] = $type;
     }
 
@@ -181,10 +183,11 @@ class DrupalOAuthToken extends OAuthToken {
       $where .= ' AND pt.tid IS NULL';
     }
     else if ($consumer) {
-      $where .= ' AND t.csid = %d';
+      $where .= ' AND t.csid = :consumer';
       $values[':consumer'] = $consumer->csid;
     }
 
+    // TODO Please convert this statement to the D7 database API syntax.
     return self::fromResult(db_query("SELECT " . $fields . " FROM {oauth_common_token} t " . $join . " WHERE " . $where, $values), $consumer);
   }
 
@@ -207,7 +210,8 @@ class DrupalOAuthToken extends OAuthToken {
       $join = 'INNER JOIN {oauth_common_provider_token} pt ON pt.tid = t.tid';
     }
 
-    return self::fromResult(db_query("SELECT " . $fields . " FROM {oauth_common_token} t " . $join . " WHERE t.tid = %d", array(
+    // TODO Please convert this statement to the D7 database API syntax.
+    return self::fromResult(db_query("SELECT " . $fields . " FROM {oauth_common_token} t " . $join . " WHERE t.tid = :tid", array(
       ':tid' => $tid,
     )));
   }

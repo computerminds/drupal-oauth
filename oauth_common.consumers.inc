@@ -61,7 +61,7 @@ function oauth_common_page_user_consumers($account) {
     $rows[] = array(
       'data' => $data + array(
         'operations' => array(
-          'data' => theme('links', $operations),
+          'data' => theme('links', array('links' => $operations)),
           'class' => 'oauth-common-consumer-operations',
         ),
       ),
@@ -69,7 +69,7 @@ function oauth_common_page_user_consumers($account) {
     );
   }
 
-  $table = theme('table', $header, $rows, array('id' => 'oauth-common-list-consumers'));
+  $table = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'oauth-common-list-consumers')));
 
   return $table;
 }
@@ -96,7 +96,7 @@ function oauth_common_edit_consumer($consumer) {
 /**
  * The consumer form that is shared by the add and edit page.
  */
-function oauth_common_form_consumer(&$form_state, $consumer) {
+function oauth_common_form_consumer($form, &$form_state, $consumer) {
   $form = array();
 
   $form['consumer_object'] = array(
