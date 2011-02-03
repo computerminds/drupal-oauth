@@ -191,16 +191,14 @@ function oauth_common_cron() {
 
   // Should 300 be overriden in DrupalOAuthServer and made configurable?
   // TODO Please review the conversion of this statement to the D7 database API syntax.
-  db_query("DELETE FROM {oauth_common_nonce}
+  /* db_query("DELETE FROM {oauth_common_nonce}
    WHERE `timestamp` < :now", 
     array(
       ':now' => REQUEST_TIME - 300,
-    )) ;
+    )) ; */
+
   db_delete('oauth_common_nonce')
-  ->condition('`timestamp`', 
-    array(
-      ':now' => REQUEST_TIME - 300,
-    ), '<')
+    ->condition('timestamp', REQUEST_TIME - 300, '<')
     ->execute();
 }
 
