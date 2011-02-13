@@ -18,4 +18,4 @@ files[] = includes/DrupalOAuthConsumer.inc
 files[] = includes/DrupalOAuthClient.inc
 files[] = includes/OAuthSignatureMethod_HMAC.inc
 
-configure = admin/config/oauth
+configure = admin/config/services/oauth

@@ -76,15 +76,15 @@ function oauth_common_menu() {
     'file' => 'oauth_common.admin.inc',
   );
 
-  $menu['admin/config/oauth'] = array(
+  $menu['admin/config/services/oauth'] = array(
     'title' => 'OAuth',
-    'description' => 'Settings for OAuth',
+    'description' => 'Configure OAuth settings.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('_oauth_common_admin'),
     'type' => MENU_NORMAL_ITEM,
   ) + $admin_base;
 
-  $menu['admin/config/oauth/settings'] = array(
+  $menu['admin/config/services/oauth/settings'] = array(
     'title' => 'Settings',
     'description' => 'Settings for OAuth',
     'page callback' => 'drupal_get_form',
